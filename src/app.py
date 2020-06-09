@@ -40,6 +40,28 @@ def before_request():
 def teardown_request(exception):
 	close_db()
 
+
+@app.route('/'or'/#')
+def hello_name():
+   return render_template('main.html')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route("/signup")
+def signup():
+    return render_template('signup.html')
+
+@app.route("/dailylook")
+def dailylook():
+    return render_template('dailylook.html')
+
+@app.route("/developer")
+def developer():
+    return render_template('developer.html')
+
+
 ### 실행
 if __name__ == '__main__':
 	main_app()

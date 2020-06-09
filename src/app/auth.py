@@ -18,23 +18,33 @@ BP = Blueprint('auth', __name__)
 #회원가입
 @BP.route('/auth/sign_up', methods = ['POST'])
 def auth__sign_up():
-    ID = request.form['id']
-    PW = request.form['pw']
-    PW2 = request.form['pw2']
-    EMAIL = request.form['email']
-    NAME = request.form['name']
-    NICK = request.form['nick']
-    BIRTH = request.form['birth']
-    GENDER = request.form['gender']
-    PHOTO = request.form['photo']
-    ##### form -> get_json()['변수'] 으로 변경(만약 form으로 안보낸다면)
-    ###########################################################
-
+    ID = request.get_json()['id']
+    PW = request.get_json()['pw']
+    PW2 = request.get_json()['pw2']
+    EMAIL = request.get_json()['email']
+    NAME = request.get_json()['name']
+    NICK = request.get_json()['nick']
+    BIRTH = request.get_json()['birth']
+    GENDER = request.get_json()['gender']
+    PHOTO = request.get_json()['photo']
+    
     # 아이디 중복확인 (대소문자 구별 X)
     id_result = user_id_check(g.db, ID)
     if id_result == "exist":
         return jsonify(
             STATUS = "ID EXIST"
+        )
+    # 아이디에 한글이 포함되어 있는지 확인
+    id_hangul = isHangul(ID)
+    if id_hangul:
+        return jsonify(
+            STATUS = "Hangul IN ID"
+        )
+    # 이메일에 한글이 포함되어 있는지 확인
+    email_hangul = isHangul(EMAIL)
+    if email_hangul:
+        return jsonify(
+            STATUS = "Hangul IN EMAIL"
         )
     # 오타방지용 비밀번호 두번 입력 후 일치 확인
     if PW != PW2:
@@ -42,41 +52,98 @@ def auth__sign_up():
             STATUS = "PW MATCH FAIL"
         )
     # 이메일 중복확인 (대소문자 구별 X)
-    id_result = user_id_check(g.db, ID)
+    email_result = user_email_check(g.db, EMAIL)
     if email_result == "exist":
         return jsonify(
             STATUS = "EMAIL EXIST"
         )
         
+    ##### 입력하지 않은 것 확인 ###############################
+    ######################################################
+    # 아이디를 입력하지 않았으면 돌려보낸다
+    if ID is None:
+        return jsonify(
+            STATUS = "INSERT ID"
+        )
+    # 비밀번호를 입력하지 않았으면 돌려보낸다
+    if PW is None:
+        return jsonify(
+            STATUS = "INSERT PW"
+        )
+    # 이메일을 입력하지 않았으면 돌려보낸다
+    if EMAIL is None:
+        return jsonify(
+            STATUS = "INSERT EMAIL"
+        )
+    # 사용자 이름을 입력하지 않았으면 돌려보낸다
+    if NAME is None:
+        return jsonify(
+            STATUS = "INSERT NAME"
+        )
+    # 닉네임을 입력하지 않았으면 돌려보낸다
+    if NICK is None:
+        return jsonify(
+            STATUS = "INSERT NICK"
+        )
+
+    ##### 글자 수 제한 #######################################
+    #######################################################
+    # 아이디가 너무 길면 돌려보낸다
+    if len(ID) > 20:
+        return jsonify(
+            STATUS = "LONG ID"
+        )
+    # 비밀번호가 너무 길면 돌려보낸다
+    if len(PW) > 100:
+        return jsonify(
+            STATUS = "LONG PW"
+        )
+    # 이메일이 너무 길면 돌려보낸다
+    if len(EMAIL) > 30:
+        return jsonify(
+            STATUS = "LONG EMAIL"
+        )
+    # 사용자 이름이 너무 길면 돌려보낸다
+    if len(NAME) > 20:
+        return jsonify(
+            STATUS = "LONG NAME"
+        )
+    # 닉네임이 너무 길면 돌려보낸다
+    if len(NICK) > 20:
+        return jsonify(
+            STATUS = "LONG NICK"
+        )
+    #####################################################    
     #디비에 정보 삽입
     user_data = (
         ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
     )
     func_result = user_insert(g.db, user_data)
     
-    ## result를 fail로 초기화
+    # result를 fail로 초기화
     result = "fail"
         
-    ## DB에 삽입 성공
+    # DB에 삽입 성공
     if func_result == "success":
         result = "SUCCESS"
 
-    ## 결과 전송
+    # 결과 전송
     return jsonify(
-        STATUS = result
+        STATUS = result,
+        access_token = create_access_token(identity = ID, expires_delta=False)
     )
 
 
 #로그인
 @BP.route('/auth/login', methods = ['POST'])
 def auth__login():
-    ID = request.form['id']
-    PW = request.form['pw']
+    ID = request.get_json()['id']
+    PW = request.get_json()['pw']
     
     # ID로 DB 접속 후 유저 있는지 확인
     user = user_select(g.db, ID)
     # DB에 ID가 없다면 없다고 출력
-    if user is None:
+    if user == "NOT FOUND":
         return jsonify(
             STATUS = "NOT FOUND"
         )
@@ -94,7 +161,7 @@ def auth__login():
                 STATUS = "INCORRECT PW"
             )
     
-#회원정보수정
+#회원정보수정 ## 사진 바꿀 때 삭제하고 해야하는지 생각 #####
 @BP.route('/auth/modify', methods = ['POST'])
 @jwt_required
 def auth__modify():
@@ -103,12 +170,54 @@ def auth__modify():
         return jsonify(
             "FucKlendar"
         )    
-    PW = request.form['pw']
-    EMAIL = request.form['email']
-    BIRTH = request.form['birth']
-    GENDER = request.form['gender']
-    PHOTO = request.form['photo']
+    PW = request.get_json()['pw']
+    PW2 = request.get_json()['pw2']
+    EMAIL = request.get_json()['email']
+    BIRTH = request.get_json()['birth']
+    GENDER = request.get_json()['gender']
+    PHOTO = request.get_json()['photo']
     
+    # 오타방지용 비밀번호 두번 입력 후 일치 확인
+    if PW != PW2:
+        return jsonify(
+            STATUS = "PW MATCH FAIL"
+        )
+    # 이메일 중복확인 (대소문자 구별 X)
+    email_result = user_email_check(g.db, EMAIL)
+    if email_result == "exist":
+        return jsonify(
+            STATUS = "EMAIL EXIST"
+        )
+    # 이메일에 한글이 포함되어 있는지 확인
+    email_hangul = isHangul(EMAIL)
+    if email_hangul:
+        return jsonify(
+            STATUS = "Hangul IN EMAIL"
+        )
+    ## 수정할 때 입력 여부 확인 ##
+    # 비밀번호를 입력하지 않았으면 돌려보낸다
+    if PW is None:
+        return jsonify(
+            STATUS = "INSERT PW"
+        )
+    # 이메일을 입력하지 않았으면 돌려보낸다
+    if EMAIL is None:
+        return jsonify(
+            STATUS = "INSERT EMAIL"
+        )
+
+    ## 수정할 때 글자 수 제한 ##
+    # 비밀번호가 너무 길면 돌려보낸다
+    if len(PW) > 100:
+        return jsonify(
+            STATUS = "LONG PW"
+        )
+    # 이메일이 너무 길면 돌려보낸다
+    if len(EMAIL) > 30:
+        return jsonify(
+            STATUS = "LONG EMAIL"
+        )
+
     user_new_data = (
         generate_password_hash(PW), EMAIL, BIRTH, GENDER, PHOTO
     )
@@ -120,9 +229,20 @@ def auth__modify():
 #아이디 찾기
 @BP.route('/auth/find_id', methods = ['POST'])
 def auth__find_id():
-    NAME = request.form['name']
-    EMAIL = request.form['email']
+    NAME = request.get_json()['name']
+    EMAIL = request.get_json()['email']
     
+    # 사용자 이름을 입력하지 않았으면 돌려보낸다
+    if NAME is None:
+        return jsonify(
+            STATUS = "INSERT NAME"
+        )
+    # 이메일을 입력하지 않았으면 돌려보낸다
+    if EMAIL is None:
+        return jsonify(
+            STATUS = "INSERT EMAIL"
+        )
+
     result = user_find_id(g.db, NAME, EMAIL)
     if result is None:
         result = "NOT FOUND"
@@ -130,27 +250,27 @@ def auth__find_id():
         RESULT = result
     )
 
-#비밀번호 찾기
-@BP.route('/auth/find_pw', methods = ['POST'])
-def auth__find_pw():
-    NAME = request.form['name']
-    EMAIL = request.form['email']
-    ID = request.form['id']
+# #비밀번호 찾기 ## 수정 필요 ##
+# @BP.route('/auth/find_pw', methods = ['POST'])
+# def auth__find_pw():
+#     NAME = request.get_json()['name']
+#     EMAIL = request.get_json()['email']
+#     ID = request.get_json()['id']
 
-    result = user_find_pw(g.db, NAME, EMAIL, ID)
-    return jsonify(
-        RESULT = result
-    )
+#     result = user_find_pw(g.db, NAME, EMAIL, ID)
+#     return jsonify(
+#         RESULT = result
+#     )
 ############################################################################
 ################## 수정 필요 #################################################
 ############################################################################
 
 #회원정보반환
-@BP.route('/API/V1/auth/get_userinfo')
+@BP.route('/auth/get_userinfo')
 @jwt_required
 def get_userinfo():
     user = user_select(g.db, get_jwt_identity())
-    # LOGOUT 한 상태
+    # LOGOUT 한 상태 or 이상하게 접근한 사람
     if user is None:
         return jsonify(
             "FucKlendar"
@@ -162,6 +282,7 @@ def get_userinfo():
         result = "success",
         user_id = user['user_id'],
         user_name = user['user_name'],
+        user_nick = user['user_nick']
     )
 
 ##########################################################################

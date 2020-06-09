@@ -1,0 +1,372 @@
+body {
+    margin: 0;
+}
+
+.line {
+    width: 100%;
+    height: 2px;
+    background: #74b9ff;
+}
+
+/* top_bar */
+.top_bar {
+    line-height: 3;
+    font-size: 1.5rem;
+    top: 0;
+    text-align: center;
+    display: flex;
+    height: 70px;
+    color: #0984e3;
+}
+
+.top_date_button {
+    flex: 1;
+    text-align: right;
+}
+
+.top_date_left {
+    margin-right: 10px;
+}
+
+.top_date_right {
+    margin-left: 10px;
+}
+
+.top_date {
+    flex: 1;
+}
+
+.top_title {
+    flex: 1;
+    font-weight: bold;
+}
+
+.top_login {
+    flex: 1;
+    color: #74b9ff;
+}
+
+/* 토글 버튼 CSS */
+.top_toggle {
+    flex: 1;
+}
+
+.checkbox {
+    position: relative;
+    background: #03A9F4;
+    width: 50%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+#top_toggle_button .circle:before {
+    content: 'CALENDAR';
+    position: absolute;
+    top: 2.5%;
+    left: 65%;
+    width: 10%;
+    height: 40px;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 2.5;
+    font-weight: bold;
+    text-align: center;
+    background-color: #03A9F4;
+    border-radius: 0%;
+}
+
+#top_toggle_button .checkbox:checked+.circle:before {
+    content: 'LOOK';
+    background-color: #f44336;
+}
+
+#top_toggle_button .checkbox:checked~.layer {
+    background-color: #fcebeb;
+}
+
+#top_toggle_button .circle,
+#top_toggle_button .circle:before,
+#top_toggle_button .layer {
+    transition: 0.3s ease all;
+}
+
+/* 사이드 메뉴 css */
+.side_menu {
+    background: rgba(0, 20, 60, .9);
+    height: 100vh;
+    left: -250px;
+    position: fixed;
+    top: 0;
+    width: 250px;
+    transition: all 0.3s ease-in-out;
+    color: white;
+}
+
+.side_menu .container {
+    padding: 0 1em;
+}
+.side_menu{
+    z-index: 888;
+}
+
+/* HAMBURGER STYLES ----- */
+.burger_box {
+    display: block;
+    float: right;
+    margin-right: -45px;
+}
+
+.burger_box a.menu-icon {
+    display: inline-block;
+    float: none;
+    height: 25px;
+    padding: 10px;
+    opacity: .5;
+    width: 25px;
+    z-index: 100;
+}
+
+.burger_box a:hover,
+.burger_box a.menu-icon.opened {
+    opacity: 1;
+}
+
+.burger_box a.menu-icon.opened,
+a.menu-icon.closed {
+    background: rgba(0, 20, 60, .9);
+}
+
+.burger_box .menu-icon_box {
+    display: inline-block;
+    height: 25px;
+    position: relative;
+    text-align: left;
+    width: 25px;
+}
+
+.burger_box .menu-icon_line {
+    background: #fff;
+    border-radius: 2px;
+    display: inline-block;
+    height: 3px;
+    position: absolute;
+    width: 100%;
+}
+
+.burger_box .menu-icon_line--1 {
+    top: 2px;
+}
+
+.burger_box .menu-icon_line--2 {
+    top: 10px;
+}
+
+.burger_box .menu-icon_line--3 {
+    top: 18px;
+}
+
+.burger_box .menu-icon_line--1 {
+    transition: top 200ms 250ms, transform 200ms;
+    -webkit-transition: top 200ms 250ms, -webkit-transform 200ms;
+}
+
+.burger_box .menu-icon_line--2 {
+    transition: opacity 0ms 300ms;
+    -webkit-transition: opacity 0ms 300ms;
+}
+
+.burger_box .menu-icon_line--3 {
+    transition: top 100ms 300ms, transform 200ms;
+    -webkit-transition: top 100ms 300ms, -webkit-transform 200ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_box {
+    transform: scale3d(0.9, 0.9, 0.9);
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+}
+
+.burger_box .menu-icon.opened .menu-icon_line {
+    top: 10px;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--1 {
+    transform: rotate3d(0, 0, 1, 45deg);
+    -webkit-transform: rotate3d(0, 0, 1, 45deg);
+    transition: top 100ms, transform 200ms 250ms;
+    -webkit-transition: top 100ms, -webkit-transform 200ms 250ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--2 {
+    opacity: 0;
+    transition: opacity 200ms;
+    -webkit-transition: opacity 200ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--3 {
+    transform: rotate3d(0, 0, 1, -45deg);
+    -webkit-transform: rotate3d(0, 0, 1, -45deg);
+    transition: top 200ms, transform 200ms 250ms;
+    -webkit-transition: top 200ms, -webkit-transform 200ms 250ms;
+}
+
+.menu_line {
+    width: 100%;
+    height: 2px;
+    background: white;
+}
+
+.menu_list_item a,
+.menu_list_item a:visited,
+.menu_list_item a:active {
+    text-decoration: none;
+    color: white;
+}
+
+.top_login a,
+.top_login a:visited,
+.top_login a:active {
+    text-decoration: none;
+    color: #0984e3;
+}
+
+.menu_list {
+    padding-inline-start: 0px;
+}
+
+.menu_list_item {
+    list-style: none;
+    margin: 10%;
+}
+
+/* 캘린더 부분 그리드 */
+.day-of-week,
+.date-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    grid-auto-rows: minmax(120px, 120px);
+    grid-gap: 5px;
+}
+.day-of-week{
+    height: 5%;
+    line-height: 3;
+}
+
+.date-grid {
+    margin-top: 0.5em;
+}
+
+.date-day:first-child {
+    grid-column: 6;
+}
+
+.date-day div {
+    margin-top: 10px;
+    line-height: 100%;
+    position: relative;
+    text-align: center;
+    background-color: transparent;
+}
+.date-day {
+    color: #0984e3;
+    background: transparent;
+    border: 2px solid #0984e3;
+    border-radius: 5px;
+    -webkit-transition: all .7s ease;
+    transition: all 0.7s ease;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+.date-day:hover{
+    color:white;
+    background: #0984e3;
+    border: 2px solid white;
+    transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+}
+.date-day:active{
+    transform: translate(3px, 3px)
+}
+.date-day button{
+    border-radius: 50%;
+    color: #0984e3;
+    background: white;
+    width: 50px;
+    height: 50px;
+    border: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    transition: all 0.5s;
+    display: table; 
+    margin-left: auto; 
+    margin-right: auto;
+    margin-top:20px;
+    opacity: 0.9;
+    display:none;
+}
+
+.modal_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: fade(#000, 85%);
+    z-index: 998;
+    display: none;
+    opacity:0.8;
+}
+
+.modal_box{
+    background: white;
+    height: 50%;
+    width: 50%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top:0; left:0; bottom:0; right:0;
+    z-index: 999;
+    opacity: 1;
+}
+
+.modal_exit{
+    width: 2em;
+    height: 2em;
+    color: black;
+    font-size: 2em;
+    border-radius: 50%;
+    position: relative;
+    text-align: center;
+    line-height: 2em;
+    float:right;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.modal_exit:hover{
+    background:#74b9ff;
+}
+
+.modal_form input{
+    text-align: center;
+}
+
+.modal_color{
+    background: #d63031;
+}
+.modal_color option:hover{
+    background: black;
+    color:pink;
+}
+
+.modal_image, .modal_outer, .modal_top, .modal_bot, .modal_shoes, .modal_acc{
+    display: none;
+}
+
+.success_login{
+    font-size: 1em;
+    display: none;
+}

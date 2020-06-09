@@ -1,32 +1,42 @@
 from pymysql import *
+import sys
+import re
+
+# 한글 확인 (한글 있으면 들어있는 리스트, 없으면 빈 리스트)
+def isHangul(text):
+    encText = text
+    
+    hanCount = re.findall(u'[\u3130-\u318F\uAC00-\uD7A3]+', encText)
+
+    return hanCount
 
 # 아이디 중복확인 (대소문자 구별 X)
 def user_id_check(db, user_id):
     with db.cursor() as cursor:
-        query = "SELECT user_id FROM Looklendar_user WHERE BINARY user_id = %s;"
+        query = "SELECT user_id FROM Looklendar_user WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
-    if result is None:
+    if result:
         return "exist"
 
 # 이메일 중복확인 (대소문자 구별 X)
 def user_email_check(db, user_email):
     with db.cursor() as cursor:
-        query = "SELECT user_email FROM Looklendar_user WHERE BINARY user_email = %s;"
+        query = "SELECT user_email FROM Looklendar_user WHERE user_email = %s;"
         cursor.execute(query, (user_email,))
         result = cursor.fetchone()
-    if result is None:
+    if result:
         return "exist"
 # 유저 정보 저장
 def user_insert(db, user_data):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_user(user_id, user_pw, user_email, user_name, user_nickname, user_birth, user_gender, user_photo, user_date) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, CURDATE());"
-        cursor.execute(query, (user_data,))
+        query = "INSERT INTO Looklendar_user(user_id, user_pw, user_email, user_name, user_nickname, user_birth, user_gender, user_photo, user_date) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW());"
+        cursor.execute(query, user_data)
     db.commit()
 
     return "success"
 
-# 유저 찾기
+# 유저 정보 반환
 def user_select(db, user_id):
     with db.cursor() as cursor:
         query = "SELECT * FROM Looklendar_user WHERE user_id = %s;"
@@ -46,16 +56,16 @@ def user_find_id(db, user_name, user_email):
 
     return result
 
-# 비밀번호 찾기
-def user_find_pw(db, user_name, user_email, user_id):
-    with db.cursor() as cursor:
-        query = "SELECT user_email FROM Looklendar_user WHERE user_name = %s AND user_email = %s AND user_id = %s;"
-        cursor.execute(query, (user_name, user_email, user_id,))
-        result = cursor.fetchone()
-    if not result:
-        return "NOT FOUND"
-    else:
-        return redirect(url_for('email__test', receiver = user_email, NEW = user_id))
+# # 비밀번호 찾기
+# def user_find_pw(db, user_name, user_email, user_id):
+#     with db.cursor() as cursor:
+#         query = "SELECT user_email FROM Looklendar_user WHERE user_name = %s AND user_email = %s AND user_id = %s;"
+#         cursor.execute(query, (user_name, user_email, user_id,))
+#         result = cursor.fetchone()
+#     if result is None:
+#         return "NOT FOUND"
+#     else:
+#         return redirect(url_for('email__test', receiver = user_email, NEW = user_id))
 
 # 비밀번호만 변경
 def user_pw_modify(db, new_pw, user_id):
@@ -70,7 +80,7 @@ def user_pw_modify(db, new_pw, user_id):
 def user_modify(db, user_new_data, user_id):
     with db.cursor() as cursor:
         query = "UPDATE Looklendar_user SET user_pw = %s, user_email = %s, user_birth = %s, user_gender = %s, user_photo = %s WHERE user_id = %s;"
-        cursor.execute(query, (user_new_data, user_id,))
+        cursor.execute(query, user_new_data, (user_id,))
     db.commit()
 
     return "SUCCESS"
