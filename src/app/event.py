@@ -12,49 +12,42 @@ from flask_cors import CORS
 ###########################################
 from db_func import *
 
-BP = Blueprint('look', __name__)
-
-
-
-#본인의 데일리 달력 반환
-@BP.route('/look/main', methods = ['POST'])
+BP = Blueprint('event', __name__)
+# 일정 달력 반환
+@BP.route('/event/main', methods = ['POST'])
 @jwt_required
-def look__look():
+def event__main():
     user = user_select(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"
         )
-    result = look_select(g.db, user['user_id'])
-    
-    ## 결과 전송
+    result = event_select(g.db, user['user_id'])
+
     return jsonify(
         RESULT = result
     )
 
-#본인의 데일리 달력에 저장
-@BP.route('/look/upload', methods = ['POST'])
+# 일정 달력 입력
+@BP.route('/event/upload', methods = ['POST'])
 @jwt_required
-def look__upload():
+def event__upload():
     user = user_select(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"
         )
-    TITLE = request.form['title']
-    PHOTO = request.form['photo']
-    OUTER = request.form['outer']
-    TOP = request.form['top']
-    BOT = request.form['bot']
-    SHOES = request.form['shoes']
-    ACC = request.form['acc']
-    DATE = request.form['date']
-
+    ID = request.form['id']
+    COLOR = request.form['color']
+    DATE1 = request.form['date1']
+    DATE2 = request.form['date2']
+    PLACE = request.form['place']
+    
     #디비에 정보 삽입
-    look_data = (
-        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC, DATE
+    event_data = (
+        ID, COLOR, DATE1, DATE2, PLACE
     )
-    func_result = look_insert(g.db, user['user_id'], look_data)
+    func_result = event_insert(g.db, user['user_id'], event_data)
     
     ## result를 fail로 초기화
     result = "fail"
@@ -68,43 +61,41 @@ def look__upload():
         STATUS = result
     )
 
-#데일리 달력 수정 ##히오니한테 그 날의 날짜를 받는 걸로 일단 함
-@BP.route('/look/modify', methods = ['POST'])
+#일정 달력 수정 ##히오니한테 그 날의 날짜를 받는 걸로 일단 함
+@BP.route('/event/modify', methods = ['POST'])
 @jwt_required
-def look__modify():
+def event__modify():
     user = user_select(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"
         )
-    TITLE = request.form['title']
-    PHOTO = request.form['photo']
-    OUTER = request.form['outer']
-    TOP = request.form['top']
-    BOT = request.form['bot']
-    SHOES = request.form['shoes']
-    ACC = request.form['acc']
+    ID = request.form['id']
+    DATE1 = request.form['date1']
+    DATE2 = request.form['date2']
+    COLOR = request.form['color']
+    PLACE = request.form['place']
     NUM = request.form['num']
 
-    look_new_data = (
-        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC
+    event_new_data = (
+        ID, DATE1, DATE2, COLOR, PLACE
     )
-    result = look_modify(g.db, look_new_data, NUM)
+    result = event_modify(g.db, event_new_data, NUM)
     return jsonify(
         STATUS = "SUCCESS"
     )
 
-#데일리 달력 삭제
-@BP.route('/look/delete', methods = ['POST'])
+#일정 달력 삭제
+@BP.route('/event/delete', methods = ['POST'])
 @jwt_required
-def look__delete():
+def event__delete():
     user = user_select(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"
         )
     NUM = request.form['num']
-    result = look_delete(g.db, NUM)
+    result = event_delete(g.db, NUM)
     
     ## 결과 전송
     return jsonify(

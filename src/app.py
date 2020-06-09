@@ -3,7 +3,7 @@
 import sys
 sys.path.insert(0,'./')
 sys.path.insert(0,'./database')
-sys.path.insert(0,'./apps')
+sys.path.insert(0,'./app')
 from flask import *
 from flask_jwt_extended import *
 from flask_cors import CORS
@@ -11,7 +11,7 @@ from flask_cors import CORS
 from db_init import *
 
 #APPS
-import auth
+import auth, look, event
 
 app = Flask(__name__, instance_relative_config=True)
 CORS(app)
@@ -26,7 +26,9 @@ jwt = JWTManager(app)
 def main_app(test_config = None):
 	### DB 초기화
 	init_db()
-	application.register_blueprint(auth.BP)
+	app.register_blueprint(auth.BP)
+	app.register_blueprint(look.BP)
+	app.register_blueprint(event.BP)
 
 ### REQUEST 오기 직전
 @app.before_request

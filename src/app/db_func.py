@@ -1,7 +1,4 @@
-from DB_initiat import *
-from MySQLdb import *
-from bson.objectid import ObjectId
-from bson.json_util import loads, dumps
+from pymysql import *
 
 # 아이디 중복확인 (대소문자 구별 X)
 def user_id_check(db, user_id):
@@ -9,9 +6,8 @@ def user_id_check(db, user_id):
         query = "SELECT user_id FROM Looklendar_user WHERE BINARY user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
-
-        if result is None:
-            return "exist"
+    if result is None:
+        return "exist"
 
 # 이메일 중복확인 (대소문자 구별 X)
 def user_email_check(db, user_email):
@@ -19,10 +15,8 @@ def user_email_check(db, user_email):
         query = "SELECT user_email FROM Looklendar_user WHERE BINARY user_email = %s;"
         cursor.execute(query, (user_email,))
         result = cursor.fetchone()
-
-        if result is None:
-            return "exist"
-
+    if result is None:
+        return "exist"
 # 유저 정보 저장
 def user_insert(db, user_data):
     with db.cursor() as cursor:
@@ -39,6 +33,8 @@ def user_select(db, user_id):
         cursor.execute(query, (user_id,))
         result = cursor.fetchone()
 
+        if result is None:
+            return "NOT FOUND"
     return result
 
 # 아이디 찾기
@@ -67,7 +63,7 @@ def user_pw_modify(db, new_pw, user_id):
         query = "UPDATE Looklendar_user SET user_pw = %s WHERE user_id = %s;"
         cursor.execute(query, (new_pw, user_id,))
     db.commit()
-    
+
     return "SUCCESS"
 
 # 유저 정보 변경
@@ -107,41 +103,77 @@ def look_modify(db, look_new_data, look_num):
     return "SUCCESS"
 
 #데일리 달력 삭제 
-def look_delete(db, post_id):
-	with db.cursor() as cursor:
-		query = "DELETE FROM Looklendar_look WHERE look_num = %s;"
-		cursor.execute(query, (look_num,))
-	db.commit()
+def look_delete(db, look_num):
+    with db.cursor() as cursor:
+        query = "DELETE FROM Looklendar_look WHERE look_num = %s;"
+        cursor.execute(query, (look_num,))
+    db.commit()
 
-	return "success"
+    return "success"
 
-#파일 이름 변환 ##수정 필요
-def file_name_encode(file_name):
-	#허용 확장자 / 길이인지 확인
-	if secure_filename(file_name).split('.')[-1].lower() in ALLOWED_EXTENSIONS and len(file_name) < 240:
+# 일정 달력 찾기
+def event_select(db, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT * FROM Looklendar_calendar WHERE user_id = %s;"
+        cursor.execute(query, (user_id,))
+        result = cursor.fetchall()
 
-		#원본 파일!
-		path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
+    return result
 
-		#이미지 리사이즈 파일!
-		path_name_S = None
+# 일정 달력에 저장 
+def event_insert(db, user_id, event_data):
+    with db.cursor() as cursor:
+        query = "INSERT INTO Looklendar_look(event_id, event_color, event_date1, event_date2, event_place, user_id) VALUES(%s, %s, %s, %s, %s, %s;"
+        cursor.execute(query, (event_data, user_id,))
+    db.commit()
 
-		if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS:
-			path_name_S = 'S-' + path_name 
+    return "success"
 
-		return {"original": path_name, "resize_s": path_name_S}
+# 일정 달력 변경 
+def event_modify(db, event_new_data, event_num):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_calendar SET event_id = %s, event_date1 = %s, event_date2 = %s, event_color = %s, event_place = %s WHERE event_num = %s;"
+        cursor.execute(query, (event_new_data, event_num,))
+    db.commit()
+
+    return "SUCCESS"
+
+#일정 달력 삭제 
+def event_delete(db, event_num):
+    with db.cursor() as cursor:
+        query = "DELETE FROM Looklendar_calendar WHERE event_num = %s;"
+        cursor.execute(query, (event_num,))
+    db.commit()
+
+    return "success"
+
+# #파일 이름 변환 ##수정 필요
+# def file_name_encode(file_name):
+# 	#허용 확장자 / 길이인지 확인
+# 	if secure_filename(file_name).split('.')[-1].lower() in ALLOWED_EXTENSIONS and len(file_name) < 240:
+
+# 		#원본 파일!
+# 		path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
+
+# 		#이미지 리사이즈 파일!
+# 		path_name_S = None
+
+# 		if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS:
+# 			path_name_S = 'S-' + path_name 
+
+# 		return {"original": path_name, "resize_s": path_name_S}
 	
-	else:
-		return None
+# 	else:
+# 		return None
 
 
-#파일 사이즈 측정 ##수정 필요
-def files_size_check(files):
-	files_size = 0
-	for file in files:
-		files_size += len(file.read())
-	#총 파일 크기 50MB 제한 
-	if files_size < (50 * (1024 ** 2)):
-		return True
-	else:
-		return False
+# #파일 사이즈 측정 ##수정 필요
+# def files_size_check(files):
+# 	files_size = 0
+# 	for file in files:
+# 		files_size += len(file.read())
+# 	#총 파일 크기 50MB 제한 
+# 	if files_size < (50 * (1024 ** 2)):
+# 		return True
+# 	else:
+# 		return False
