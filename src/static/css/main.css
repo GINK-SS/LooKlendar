@@ -45,6 +45,20 @@ body {
     flex: 1;
     color: #74b9ff;
 }
+.before_login{
+    display: block;
+}
+.success_login{
+    display: none;
+    float: left;
+    clear: both;
+}
+.success_login img{
+    width: 30%;
+    height: 60%;
+    vertical-align: middle;
+    margin-bottom: 5%;
+}
 
 /* 토글 버튼 CSS */
 .top_toggle {
@@ -127,6 +141,12 @@ body {
     opacity: .5;
     width: 25px;
     z-index: 100;
+}
+
+.burger_box a.menu-icon,
+.burger_box a.menu-icon::before,
+.burger_box a.menu-icon::after{
+    box-sizing: unset;
 }
 
 .burger_box a:hover,
@@ -366,7 +386,4 @@ a.menu-icon.closed {
     display: none;
 }
 
-.success_login{
-    font-size: 1em;
-    display: none;
-}
+

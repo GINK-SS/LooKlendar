@@ -55,17 +55,55 @@
       </div>
     </div>
 
-    <a class="top_login" href="login">login</a>
-    <div class="success_login">
-      <span>반갑습니다. </span>
-      <img src="" alt="">
-      <span>임희원 님!</span>
+    <div class="top_login">
+      <a class="before_login" href="/login">login</a>
+      <div class="success_login">
+        <img src="../static/image/user_image.jpg">
+        <span id="user_info">임희원님</span>
+      </div>
     </div>
+    
 
   </div>
   <div class="line"></div>
 
   <div class="calendar">
+    
+    <div class="container">
+      <div class="my-calendar clearfix">
+        <div class="clicked-date">
+          <div class="cal-day"></div>
+          <div class="cal-date"></div>
+        </div>
+        <div class="calendar-box">
+          <div class="ctr-box clearfix">
+            <button type="button" title="prev" class="btn-cal prev">
+            </button>
+            <span class="cal-month"></span>
+            <span class="cal-year"></span>
+            <button type="button" title="next" class="btn-cal next">
+            </button>
+          </div>
+          <table class="cal-table">
+            <thead>
+              <tr class="cal-dday">
+                <th>일</th>
+                <th>월</th>
+                <th>화</th>
+                <th>수</th>
+                <th>목</th>
+                <th>금</th>
+                <th>토</th>
+              </tr>
+            </thead>
+            <tbody class="cal-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- // .my-calendar -->
+    </div>
+
+
     <div class="day-of-week">
       <div>일</div>
       <div>월</div>
@@ -75,43 +113,6 @@
       <div>금</div>
       <div>토</div>
     </div>
-
-    <div class="modal_background">
-      <div class="modal_box">
-        <span class="modal_exit">X</span>
-        <div class="modal_form">
-          <select name="modal_color" class="modal_color" onchange="select_change(this)">
-            <option value="red" style="background:#d63031" selected></option>
-            <option value="orange" style="background:#e17055"></option>
-            <option value="yellow" style="background: #fdcb6e"></option>
-            <option value="green" style="background:#00b894"></option>
-            <option value="blue" style="background: #0984e3"></option>
-            <option value="purple" style="background: #a29bfe"></option>
-            <option value="gray" style="background: #636e72"></option>
-          </select>
-          <select name="modal" id="modal_select" onchange="modal_change(this);">
-            <option value="modal_select_calendar">일정</option>
-            <option value="modal_select_look">데일리룩</option>
-          </select><br>
-          <input type="text" class="modal_title" placeholder="제목 입력"><br>
-          <input type="date" class="modal_time" placeholder="날짜 입력"><br>
-          <input type="text" class="modal_place" placeholder="위치 추가"><br>
-
-          <input type="text" class="modal_outer" placeholder="아우터">
-          <input type="text" class="modal_top" placeholder="상의">
-          <input type="text" class="modal_bot" placeholder="하의">
-          <input type="text" class="modal_shoes" placeholder="신발">
-          <input type="text" class="modal_acc" placeholder="악세서리">
-          
-
-          <input type="file" class="modal_image" accept="image/*" onchange="setThumbnail(event);" multiple />
-          <div id="modal_image_container"></div>
-
-          <button type="submit">저장</button>
-        </div>
-      </div>
-    </div>
-
     <div class="date-grid">
       <div class="date-day">
         <div datetime="2020-05-01">1</div>
@@ -238,13 +239,50 @@
         <button class="calendar_plus_button">+</button>
       </div>
     </div>
+
+    <div class="modal_background">
+      <div class="modal_box">
+        <span class="modal_exit">X</span>
+        <div class="modal_form">
+          <select name="modal_color" class="modal_color" onchange="select_change(this)">
+            <option value="red" style="background:#d63031" selected></option>
+            <option value="orange" style="background:#e17055"></option>
+            <option value="yellow" style="background: #fdcb6e"></option>
+            <option value="green" style="background:#00b894"></option>
+            <option value="blue" style="background: #0984e3"></option>
+            <option value="purple" style="background: #a29bfe"></option>
+            <option value="gray" style="background: #636e72"></option>
+          </select>
+          <select name="modal" id="modal_select" onchange="modal_change(this);">
+            <option value="modal_select_calendar">일정</option>
+            <option value="modal_select_look">데일리룩</option>
+          </select><br>
+          <input type="text" class="modal_title" placeholder="제목 입력"><br>
+          <input type="date" class="modal_time" placeholder="날짜 입력"><br>
+          <input type="text" class="modal_place" placeholder="위치 추가"><br>
+
+          <input type="text" class="modal_outer" placeholder="아우터">
+          <input type="text" class="modal_top" placeholder="상의">
+          <input type="text" class="modal_bot" placeholder="하의">
+          <input type="text" class="modal_shoes" placeholder="신발">
+          <input type="text" class="modal_acc" placeholder="악세서리">
+          
+
+          <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" multiple />
+          <div id="modal_image_container"></div>
+
+          <button type="submit">저장</button>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../static/css/main.css">
-<script src="../static/js/main.js"></script>
-<script src="../static/js/calendar.js"></script>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../static/css/calendar.css">
+<script type="text/javascript" src="../static/js/main.js"></script>
+<script type="text/javascript" src="../static/js/calendar.js"></script>
+
 
 </html>

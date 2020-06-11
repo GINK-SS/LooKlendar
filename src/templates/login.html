@@ -1,6 +1,6 @@
 <!-- <link rel="stylesheet" href="../static/css/login.css" type="text/css"> -->
 
-<form action="/login" method="POST">
+<body>
     <div class="login">
         <div class="login-screen">
             <div class="app-title">
@@ -9,20 +9,27 @@
 
             <div class="login-form">
                 <div class="control-group">
-                    <input type="text" class="login-field" value="" placeholder="username" name="username">
+                    <input type="text" id="login_id" class="login-field" value="" placeholder="username"
+                        name="username">
                     <label class="login-field-icon fui-user" for="login-name"></label>
                 </div>
 
                 <div class="control-group">
-                    <input type="password" class="login-field" value="" placeholder="password" name="password">
+                    <input type="password" id="login_pw" class="login-field" value="" placeholder="password"
+                        name="password">
                     <label class="login-field-icon fui-lock" for="login-pass"></label>
                 </div>
 
-                <input href="/" type="submit" id="login_btn" value="Log in" class="btn btn-primary btn-large btn-block">
+                <button id="login_btn" value="Log in" class="btn btn-primary btn-large btn-block">Login</button>
                 <br>
 
                 <a href="/signup">회원가입</a>
             </div>
         </div>
     </div>
-</form>
+
+</body>
+
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../static/js/login.js"></script>

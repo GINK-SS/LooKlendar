@@ -1,0 +1,196 @@
+html,
+body {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+.clearfix:after {
+    content: '';
+    display: block;
+    clear: both;
+    float: none;
+}
+
+/* ======== Calendar ======== */
+.my-calendar {
+    width: 95%;
+    margin: 2.5%;
+    /* padding: 20px 20px 10px; */
+    text-align: center;
+    font-weight: 800;
+    border: 1px solid #ddd;
+    cursor: default;
+}
+
+.my-calendar .clicked-date {
+    border-radius: 25px;
+    margin-top: 36px;
+    float: left;
+    width: 42%;
+    padding: 46px 0 26px;
+    background: #ddd;
+}
+
+.clicked-date{
+    display: none;
+}
+
+.my-calendar .calendar-box {
+    float: right;
+    width: 100%;
+}
+
+.clicked-date .cal-day {
+    font-size: 1em;
+}
+
+.clicked-date .cal-date {
+    font-size: 130px;
+}
+
+.ctr-box {
+    padding: 16px 16px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.ctr-box .btn-cal {
+    position: relative;
+    float: left;
+    width: 25px;
+    height: 25px;
+    margin-top: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.ctr-box .btn-cal:after {
+    content: '<';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    line-height: 25px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.ctr-box .btn-cal.next {
+    float: right;
+}
+
+.ctr-box .btn-cal.next:after {
+    content: '>';
+}
+
+.cal-table {
+    width: 100%;
+}
+
+.cal-dday th{
+    height: 10%;
+}
+/* grid layout */
+.cal-table tr{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    grid-auto-rows: minmax(120px, 120px);
+    grid-gap: 5px;
+}
+
+/* .cal-table th {
+    width: 14.2857%;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.cal-table td {
+    padding: 3px 0;
+    height: 50px;
+    font-size: 15px;
+    vertical-align: middle;
+} */
+
+.cal-table td.day {
+    position: relative;
+    cursor: pointer;
+    margin-top: 10px;
+    line-height: 100%;
+    text-align: center;
+    background-color: transparent;
+}
+
+.cal-table td.day {
+    color: #0984e3;
+    background: transparent;
+    border: 2px solid #0984e3;
+    border-radius: 5px;
+    -webkit-transition: all .7s ease;
+    transition: all 0.7s ease;
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+.cal-table td.day:hover{
+    color:white;
+    background: #0984e3;
+    border: 2px solid white;
+    transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+
+}
+.cal-table td.day:active{
+    transform: translate(3px, 3px)
+}
+
+/* 오늘 날짜 css */
+.cal-table td.today {
+    background: #ffd255;
+    color: #fff;
+}
+
+/* 선택한 날짜 css */
+.cal-table td.day-active {
+    background: #ff8585;
+    color: #fff;
+}
+
+.cal-table td.has-event:after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background: #FFC107;
+}
+
+.cal-table td button{
+    border-radius: 50%;
+    color: #0984e3;
+    background: white;
+    width: 50px;
+    height: 50px;
+    border: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    transition: all 0.5s;
+    display: table; 
+    margin-left: auto; 
+    margin-right: auto;
+    margin-top:20px;
+    opacity: 0.9;
+    display:none;
+}

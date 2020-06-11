@@ -1,8 +1,14 @@
 from pymysql import *
 import sys
 import re
+#ok# 공백 확인
+def isBlank(text):
+    encText = text
 
-# 한글 확인 (한글 있으면 들어있는 리스트, 없으면 빈 리스트)
+    blankCount = re.findall(' ', encText)
+
+    return blankCount
+#ok# 한글 확인 (한글 있으면 들어있는 리스트, 없으면 빈 리스트)
 def isHangul(text):
     encText = text
     
@@ -10,7 +16,39 @@ def isHangul(text):
 
     return hanCount
 
-# 아이디 중복확인 (대소문자 구별 X)
+#ok# 기타 특수문자 확인 (특수문자 있으면 들어있는 리스트, 없으면 빈 리스트)
+def isSpecial(text):
+    encText = text
+
+    SpeCount = re.findall(u'[^\w\s]', encText)
+
+    return SpeCount
+
+#ok# (이메일만) 기타 특수문자 확인 (이메일 중 앞에 아이디 부분만 추출하기 위하여)
+def is_emailSpecial(text):
+    encText = text
+    pattern = '(@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)'
+    text = re.sub(pattern=pattern, repl='', string=text)
+    SpeCount = re.findall(u'[^\w\s]', text)
+
+    return SpeCount
+# 아직 안됨 ####한글 자음, 모음 확인 (온전한 한글이 아닌 것 확인)
+def isHangulzmo(text):
+    p = re.compile(u'[ㄱ-ㅎㅏ-ㅣ]+')
+    encText = text
+    ZM = p.match(encText)
+
+    return ZM
+
+#ok# 이메일 형식인지 확인
+def is_emailFormat(text):
+    p = re.compile('^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    encText = text
+    EF = p.match(encText)
+
+    return EF
+
+#ok# 아이디 중복확인 (대소문자 구별 X)
 def user_id_check(db, user_id):
     with db.cursor() as cursor:
         query = "SELECT user_id FROM Looklendar_user WHERE user_id = %s;"
@@ -19,7 +57,16 @@ def user_id_check(db, user_id):
     if result:
         return "exist"
 
-# 이메일 중복확인 (대소문자 구별 X)
+#ok# 닉네임 중복확인 (대소문자 구별 X)
+def user_nick_check(db, user_nickname):
+    with db.cursor() as cursor:
+        query = "SELECT user_nickname FROM Looklendar_user WHERE user_nickname = %s;"
+        cursor.execute(query, (user_nickname,))
+        result = cursor.fetchone()
+    if result:
+        return "exist"
+
+#ok# 이메일 중복확인 (대소문자 구별 X)
 def user_email_check(db, user_email):
     with db.cursor() as cursor:
         query = "SELECT user_email FROM Looklendar_user WHERE user_email = %s;"
@@ -27,7 +74,15 @@ def user_email_check(db, user_email):
         result = cursor.fetchone()
     if result:
         return "exist"
-# 유저 정보 저장
+#ok# 이메일 수정 시 중복확인 (대소문자 구별 X, 본인 원래 이메일은 제외)
+def user_email_check2(db, user_email, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT user_email FROM Looklendar_user WHERE user_email = %s AND user_id <> %s;"
+        cursor.execute(query, (user_email, user_id,))
+        result = cursor.fetchone()
+    if result:
+        return "exist"        
+#ok# 유저 정보 저장
 def user_insert(db, user_data):
     with db.cursor() as cursor:
         query = "INSERT INTO Looklendar_user(user_id, user_pw, user_email, user_name, user_nickname, user_birth, user_gender, user_photo, user_date) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, NOW());"
@@ -36,7 +91,7 @@ def user_insert(db, user_data):
 
     return "success"
 
-# 유저 정보 반환
+#ok# 유저 정보 반환
 def user_select(db, user_id):
     with db.cursor() as cursor:
         query = "SELECT * FROM Looklendar_user WHERE user_id = %s;"
@@ -47,7 +102,7 @@ def user_select(db, user_id):
             return "NOT FOUND"
     return result
 
-# 아이디 찾기
+#ok# 아이디 찾기
 def user_find_id(db, user_name, user_email):
     with db.cursor() as cursor:
         query = "SELECT user_id FROM Looklendar_user WHERE user_name = %s AND user_email = %s;"
@@ -67,7 +122,7 @@ def user_find_id(db, user_name, user_email):
 #     else:
 #         return redirect(url_for('email__test', receiver = user_email, NEW = user_id))
 
-# 비밀번호만 변경
+# 비밀번호만 변경 # 아직 구현 안할거임
 def user_pw_modify(db, new_pw, user_id):
     with db.cursor() as cursor:
         query = "UPDATE Looklendar_user SET user_pw = %s WHERE user_id = %s;"
@@ -76,11 +131,11 @@ def user_pw_modify(db, new_pw, user_id):
 
     return "SUCCESS"
 
-# 유저 정보 변경
-def user_modify(db, user_new_data, user_id):
+#ok# 유저 정보 변경
+def user_modify(db, user_new_data):
     with db.cursor() as cursor:
         query = "UPDATE Looklendar_user SET user_pw = %s, user_email = %s, user_birth = %s, user_gender = %s, user_photo = %s WHERE user_id = %s;"
-        cursor.execute(query, user_new_data, (user_id,))
+        cursor.execute(query, user_new_data)
     db.commit()
 
     return "SUCCESS"
@@ -131,10 +186,10 @@ def event_select(db, user_id):
     return result
 
 # 일정 달력에 저장 
-def event_insert(db, user_id, event_data):
+def event_insert(db, event_data):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_look(event_id, event_color, event_date1, event_date2, event_place, user_id) VALUES(%s, %s, %s, %s, %s, %s;"
-        cursor.execute(query, (event_data, user_id,))
+        query = "INSERT INTO Looklendar_calendar(event_id, event_color, event_date1, event_date2, event_place, user_id) VALUES(%s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, event_data)
     db.commit()
 
     return "success"

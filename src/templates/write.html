@@ -1,0 +1,46 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div>
+            <div>회원가입</div>
+            <div>
+                제목 :
+                <input type="text" placeholder="제목 입력" id="signup_id">
+            </div>
+            <div>
+                내용 :
+                <input type="text" placeholder="내용 입력" id="signup_pw">
+            </div>
+            <div>
+                아우터 :
+                <input type="text" placeholder="아우터 입력" id="signup_pw2">
+            </div>
+            <div>
+                상의 :
+                <input type="text" placeholder="상의 입력" id="signup_email">
+            </div>
+            <div>
+                하의 :
+                <input type="text" placeholder="하의 입력" id="signup_name">
+            </div>
+            <div>
+                신발 :
+                <input type="text" placeholder="신발 입력" id="signup_nickname">
+            </div>
+            <div>
+                악세서리 :
+                <input type="text" placeholder="악세서리 입력" id="signup_birth">
+            </div>
+            <div>
+                <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" multiple />
+                <div id="modal_image_container"></div>
+            </div>
+            <button id="signup_button" onclick="location.href='/dailylook'">저장</button>
+        </div>
+    </body>
+
+    <script src="../static/js/dailylook.js"></script>
+
+</html>

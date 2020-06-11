@@ -37,17 +37,17 @@ def event__upload():
         return jsonify(
             "FucKlendar"
         )
-    ID = request.form['id']
-    COLOR = request.form['color']
-    DATE1 = request.form['date1']
-    DATE2 = request.form['date2']
-    PLACE = request.form['place']
+    ID = request.get_json()['id']
+    COLOR = request.get_json()['color']
+    DATE1 = request.get_json()['date1']
+    DATE2 = request.get_json()['date2']
+    PLACE = request.get_json()['place']
     
     #디비에 정보 삽입
     event_data = (
-        ID, COLOR, DATE1, DATE2, PLACE
+        ID, COLOR, DATE1, DATE2, PLACE, user['user_id']
     )
-    func_result = event_insert(g.db, user['user_id'], event_data)
+    func_result = event_insert(g.db, event_data)
     
     ## result를 fail로 초기화
     result = "fail"
@@ -70,12 +70,12 @@ def event__modify():
         return jsonify(
             "FucKlendar"
         )
-    ID = request.form['id']
-    DATE1 = request.form['date1']
-    DATE2 = request.form['date2']
-    COLOR = request.form['color']
-    PLACE = request.form['place']
-    NUM = request.form['num']
+    ID = request.get_json()['id']
+    DATE1 = request.get_json()['date1']
+    DATE2 = request.get_json()['date2']
+    COLOR = request.get_json()['color']
+    PLACE = request.get_json()['place']
+    NUM = request.get_json()['num']
 
     event_new_data = (
         ID, DATE1, DATE2, COLOR, PLACE
@@ -94,7 +94,7 @@ def event__delete():
         return jsonify(
             "FucKlendar"
         )
-    NUM = request.form['num']
+    NUM = request.get_json()['num']
     result = event_delete(g.db, NUM)
     
     ## 결과 전송
