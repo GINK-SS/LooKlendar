@@ -13,6 +13,7 @@ from flask_cors import CORS
 from db_func import *
 
 BP = Blueprint('event', __name__)
+
 # 일정 달력 반환
 @BP.route('/event/main', methods = ['POST'])
 @jwt_required

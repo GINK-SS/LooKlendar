@@ -31,8 +31,6 @@ document.querySelector(".js-menu_toggle").addEventListener("click", function(){
 // ------------------------------------로그인 유저 불러오기------------------------------
 function get_userinfo_FetchAPI(){
     const token = sessionStorage.getItem('access_token');
-    console.log("토큰 불러왔음");
-    console.log(token);
     fetch('/auth/get_userinfo', {
         method: "GET",
         headers: {
@@ -43,8 +41,6 @@ function get_userinfo_FetchAPI(){
     })
     .then(res => res.json())
     .then((res) => {
-        console.log("아래 response임");
-        console.log(res);
         if( res['result'] == "success"){
             let user_id = res['user_id'];
             let user_name = res['user_name'];

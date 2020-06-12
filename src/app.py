@@ -9,7 +9,7 @@ from flask_jwt_extended import *
 from flask_cors import CORS
 ##########################################
 from db_init import *
-
+#app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 #APPS
 import auth, look, event
 

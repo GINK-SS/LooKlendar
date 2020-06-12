@@ -8,6 +8,9 @@ from flask import *
 from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
+from PIL import Image
+from werkzeug.utils import secure_filename
+import datetime
 #from flask_mail import Mail, Message
 #import time
 ###########################################
@@ -15,19 +18,22 @@ from db_func import *
 
 BP = Blueprint('auth', __name__)
 
+UPLOAD_PATH = "/static/files/"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
+IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
+
 #ok#회원가입
 @BP.route('/auth/sign_up', methods = ['POST'])
 def auth__sign_up():
-    ID = request.get_json()['id']
-    PW = request.get_json()['pw']
-    PW2 = request.get_json()['pw2']
-    EMAIL = request.get_json()['email']
-    NAME = request.get_json()['name']
-    NICK = request.get_json()['nick']
-    BIRTH = request.get_json()['birth']
-    GENDER = request.get_json()['gender']
-    PHOTO = request.get_json()['photo']
-    
+    ID = request.form['id']
+    PW = request.form['pw']
+    PW2 = request.form['pw2']
+    EMAIL = request.form['email']
+    NAME = request.form['name']
+    NICK = request.form['nick']
+    BIRTH = request.form['birth']
+    GENDER = request.form['gender']
+    files = request.files['file']
     #ok# 아이디가 너무 길면 돌려보낸다
     if len(ID) > 20:
         return jsonify(
@@ -68,7 +74,7 @@ def auth__sign_up():
     email_special = is_emailSpecial(EMAIL)
     if email_hangul or email_special or not is_emailFormat(EMAIL):
         return jsonify(
-            STATUS = "Wrong EMAIL or NOT EMAIL FORMAT"
+            STATUS = "Wrong EMAIL or NOT EMAIL get_json()AT"
         )
     #ok# 오타방지용 비밀번호 두번 입력 후 일치 확인
     if PW != PW2:
@@ -153,14 +159,28 @@ def auth__sign_up():
             return jsonify(
                 STATUS = "Wrong BIRTH"
             )
+    if files:
+        file_check = file_name_encode(files.filename)
+        if file_check is not None:
+            PHOTO = file_check['original']
+        else:
+            return jsonify(
+                STATUS = "Wrong PHOTO"
+            )
+        user_data = (
+            ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
+        )
+        func_result = user_insert(g.db, user_data)
+        if func_result == "success":
+            files.save('.' + UPLOAD_PATH + file_check['original'])
     #ok# 사진 첨부 안했다면 NULL 입력
-    if PHOTO == "":
+    else:
         PHOTO = None
 
-    user_data = (
-        ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
-    )
-    func_result = user_insert(g.db, user_data)
+        user_data = (
+            ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
+        )
+        func_result = user_insert(g.db, user_data)
     
     # result를 fail로 초기화
     result = "fail"
@@ -239,7 +259,7 @@ def auth__modify():
     email_special = is_emailSpecial(EMAIL)
     if email_hangul or email_special or not is_emailFormat(EMAIL):
         return jsonify(
-            STATUS = "Wrong EMAIL or NOT EMAIL FORMAT"
+            STATUS = "Wrong EMAIL or NOT EMAIL get_json()AT"
         )
     ##ok## 수정할 때 입력 여부 확인 ##
     #ok# 비밀번호를 입력하지 않았으면 돌려보낸다
@@ -389,3 +409,18 @@ def get_userinfo():
 ############################################################################
 ############################################################################
 ############################################################################
+# 파일 이름 변환 ##수정 필요
+def file_name_encode(file_name):
+    # 허용 확장자 / 길이인지 확인
+    if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS and len(file_name) < 240:
+
+        #원본 파일
+        path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
+        
+        # 미리보기 파일
+        s_path_name = 'S-' + path_name
+
+        return {"original": path_name, "resize": s_path_name}
+
+    else:
+        return None

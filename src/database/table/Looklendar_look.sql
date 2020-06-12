@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS Looklendar_look(
     look_num INT NOT NULL AUTO_INCREMENT,
     look_title VARCHAR(45) NOT NULL,
     look_photo TEXT,
+    look_s_photo TEXT,
     look_outer VARCHAR(45),
     look_top VARCHAR(45) NOT NULL,
     look_bot VARCHAR(45),

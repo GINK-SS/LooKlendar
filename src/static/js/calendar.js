@@ -206,11 +206,11 @@ var modal_change = (function (selected) {
 function select_change(e) {
     var modal_c = document.querySelector(".modal_color");
 
-    if (e.value == "red") modal_c.style.background = "#d63031";
-    else if (e.value == "orange") modal_c.style.background = "#e17055";
-    else if (e.value == "yellow") modal_c.style.background = "#fdcb6e";
+    if (e.value == "red") modal_c.style.background = "#d64b4b";
+    else if (e.value == "orange") modal_c.style.background = "#fdcb6e";
+    else if (e.value == "yellow") modal_c.style.background = "#ffeaa7";
     else if (e.value == "green") modal_c.style.background = "#00b894";
-    else if (e.value == "blue") modal_c.style.background = "#0984e3";
+    else if (e.value == "blue") modal_c.style.background = "#0652DD";
     else if (e.value == "purple") modal_c.style.background = "#a29bfe";
     else if (e.value == "gray") modal_c.style.background = "#636e72";
 }
@@ -233,25 +233,16 @@ function setThumbnail(event) {
 
 
 
-//////////////////////// 플러스 버튼 호버링 /////////////////////
+//////////////////////// plus button 플러스 버튼 호버링 /////////////////////
 setTimeout(() => {
-    var date_all = document.querySelectorAll("div.date-day");
-    for (let item of date_all) {
-        item.addEventListener('mouseenter', function () {
-            item.childNodes[item.childNodes.length - 2].style.display = "block";
-        })
-        item.addEventListener('mouseleave', function () {
-            item.childNodes[item.childNodes.length - 2].style.display = "none";
-        })
-    }
 
     var date_all2 = document.querySelectorAll(".day");
     for (let item of date_all2) {
         item.addEventListener('mouseenter', function () {
-            item.lastChild.style.display = "block";
+            item.childNodes[item.childNodes.length-1].style.display = "block";
         })
         item.addEventListener('mouseleave', function () {
-            item.lastChild.style.display = "none";
+            item.childNodes[item.childNodes.length-1].style.display = "none";
         })
     }
 }, 500)
@@ -268,11 +259,11 @@ $("#modal_submit").on({
 function calendar_FetchAPI_v1() {
     
     let mcolor = $(".modal_color option:selected").val();
-    if(mcolor == 'red') mcolor="#d63031";
-    else if(mcolor == 'orange') mcolor="#e17055";
-    else if(mcolor == 'yellow') mcolor="#fdcb6e";
+    if(mcolor == 'red') mcolor="#d64b4b";
+    else if(mcolor == 'orange') mcolor="#fdcb6e";
+    else if(mcolor == 'yellow') mcolor="#ffeaa7";
     else if(mcolor == 'green') mcolor="#00b894";
-    else if(mcolor == 'blue') mcolor="#0984e3";
+    else if(mcolor == 'blue') mcolor="#0652DD";
     else if(mcolor == 'purple') mcolor="#a29bfe";
     else if(mcolor == 'gray') mcolor="#a29bfe";
 
@@ -290,18 +281,70 @@ function calendar_FetchAPI_v1() {
         'event_date2' : end_time
     };
     console.log(send_data);
-    fetch('/', {
+    const token = sessionStorage.getItem('access_token');
+    console.log(token);
+
+    fetch('/event/upload', {
         method : "POST",
         headers : {
-            'Content-Type': "application/json"
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token,
         },
         body : JSON.stringify(send_data)
     })
     .then(res => res.json())
     .then((res) => {
         console.log(res);
-        if(res['STATUS']=="SUCCESS"){
-            console.log("일정 저장 완료!");
-        }
+        console.log("일정 삽입 완료!");
     })
+}
+
+//////////////////////// 일정 불러와서 띄우기 ///////////////////
+
+let event_color = "#d53031";
+let event_date1 = "Fri, 12 Jun 2020 00:00:00 GMT";
+let event_date2 = "Fri, 12 Jun 2020 00:00:00 GMT";
+let event_id = "오늘은 희원이랑 데베 하는 날!";
+let event_num = 2;
+let event_place = "파리바게트";
+let user_id = "testtest";
+
+let get_calendar = {
+    'event_color' : "#d64b4b",
+    'event_date1' : "2020.06.12",
+    'event_date2' : "Fri, 12 Jun 2020 00:00:00 GMT",
+    'event_id' : "오늘은 희원이랑 데베 하는 날!",
+    'event_num' : 2,
+    'event_place' : "파리바게트",
+    'user_id' : "testtest"
+}
+
+let append_calendar = document.createElement('div');
+get_id = document.createTextNode(get_calendar["event_id"]);
+append_calendar.appendChild(get_id);
+append_calendar.classList.add("cal_calendar");
+append_calendar.style.background= get_calendar["event_color"];
+
+let append_calendar2 = document.createElement('div');
+get_id2 = document.createTextNode("오늘은 상민이랑 탐탐");
+append_calendar2.appendChild(get_id2);
+append_calendar2.classList.add("cal_calendar");
+append_calendar2.style.background="#0652DD";
+
+let append_calendar3 = document.createElement('div');
+get_id2 = document.createTextNode("오늘은 상민이랑 탐탐");
+append_calendar3.appendChild(get_id2);
+append_calendar3.classList.add("cal_calendar");
+append_calendar3.style.background="#a29bfe";
+
+var all_day = document.querySelectorAll(".day");
+
+for(let i=0; i<all_day.length; i++){
+    if(all_day[i].attributes[2].nodeValue == get_calendar["event_date1"]){
+        all_day[i].insertBefore(append_calendar, all_day[i].lastChild);
+        all_day[i].insertBefore(append_calendar2, all_day[i].lastChild);
+        all_day[i].insertBefore(append_calendar3, all_day[i].lastChild);        
+        // document.querySelector(".cal_calendar").style.background = get_calendar["event_color"];
+    }
 }

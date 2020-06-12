@@ -1,7 +1,7 @@
 from pymysql import *
 import sys
 import re
-import datetime
+from datetime import datetime
 #ok# 공백 확인
 def isBlank(text):
     encText = text
@@ -88,11 +88,11 @@ def birth_check(BIRTH):
     system_date_format = '%Y%m%d'
 
     try:
-        birthday = datetime.datetime.strptime(BIRTH, system_date_format)
+        birthday = datetime.strptime(BIRTH, system_date_format)
     except ValueError:
         return "Wrong"
     
-    if datetime.datetime.now() < birthday:
+    if datetime.now() < birthday:
         return "Wrong"
     birthTuple = birthday.timetuple()
     if birthTuple.tm_year < 1900:
@@ -159,7 +159,7 @@ def user_modify(db, user_new_data):
 #ok# 데일리 달력에 저장 
 def look_insert(db, look_data):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_look(look_title, look_photo, look_outer, look_top, look_bot, look_shoes, look_acc, look_date, user_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "INSERT INTO Looklendar_look(look_title, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc, look_date, user_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
         cursor.execute(query, look_data)
     db.commit()
 
@@ -195,7 +195,8 @@ def look_delete(db, look_num):
 #ok# 일정 달력 찾기
 def event_select(db, user_id):
     with db.cursor() as cursor:
-        query = "SELECT * FROM Looklendar_calendar WHERE user_id = %s;"
+        # 희원이한테 날짜를 문자열로 줘야하는데 아니면은 이상하게 나와서 처음엔 간단한 %Y 이런식으로 했는데 이게 파이썬에서 뭘 받는 걸로 인식을 해서 년도, 월, 일 따로 받았는데 따로 떨어져 있어서 CONCAT으로 묶었지만 한자리면은 한자리 수만 나와서 그 앞에 IF문을 사용해서 한자리면 앞에 0을 붙이게 출력하도록 함
+        query = "SELECT event_num, event_id, event_color, user_id, CONCAT(year(event_date1), '.', IF(LENGTH(month(event_date1))<>2, CONCAT('0', month(event_date1)), month(event_date1)), '.', IF(LENGTH(day(event_date1))<>2, CONCAT('0', day(event_date1)), day(event_date1))) AS event_date1, CONCAT(year(event_date2), '.', IF(LENGTH(month(event_date2))<>2, CONCAT('0', month(event_date2)), month(event_date2)), '.', IF(LENGTH(day(event_date2))<>2, CONCAT('0', day(event_date2)), day(event_date2))) AS event_date2, event_place FROM Looklendar_calendar WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
 
@@ -227,34 +228,3 @@ def event_delete(db, event_num):
     db.commit()
 
     return "success"
-
-# #파일 이름 변환 ##수정 필요
-# def file_name_encode(file_name):
-# 	#허용 확장자 / 길이인지 확인
-# 	if secure_filename(file_name).split('.')[-1].lower() in ALLOWED_EXTENSIONS and len(file_name) < 240:
-
-# 		#원본 파일!
-# 		path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
-
-# 		#이미지 리사이즈 파일!
-# 		path_name_S = None
-
-# 		if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS:
-# 			path_name_S = 'S-' + path_name 
-
-# 		return {"original": path_name, "resize_s": path_name_S}
-	
-# 	else:
-# 		return None
-
-
-# #파일 사이즈 측정 ##수정 필요
-# def files_size_check(files):
-# 	files_size = 0
-# 	for file in files:
-# 		files_size += len(file.read())
-# 	#총 파일 크기 50MB 제한 
-# 	if files_size < (50 * (1024 ** 2)):
-# 		return True
-# 	else:
-# 		return False

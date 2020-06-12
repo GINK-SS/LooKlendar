@@ -24,8 +24,7 @@ function login_FetchAPI_v1() {
     .then(res => res.json())
     .then((res) => {
         console.log(res);
-        if(res['STATUS']=="SUCCESS"){
-            console.log("로그인됨!!! 왜안바뀌지");            
+        if(res['STATUS']=="SUCCESS"){        
             sessionStorage.setItem('access_token', "Bearer "+res['access_token']);
             window.location.href="http://localhost:5000/";
         }
