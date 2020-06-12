@@ -28,32 +28,39 @@ document.querySelector(".js-menu_toggle").addEventListener("click", function(){
 });
 
 
-
 // ------------------------------------로그인 유저 불러오기------------------------------
 function get_userinfo_FetchAPI(){
     const token = sessionStorage.getItem('access_token');
-    let send_data= {'token' : token}
-    console.log(send_data);
-    fetch('/auth/get_userinfo',{
-        method : "",
-        headers : {
-            'Content-Type': "application/json"
-        },
-        body : JSON.stringify(send_data)
+    console.log("토큰 불러왔음");
+    console.log(token);
+    fetch('/auth/get_userinfo', {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': token,
+        }
     })
     .then(res => res.json())
     .then((res) => {
+        console.log("아래 response임");
         console.log(res);
         if( res['result'] == "success"){
             let user_id = res['user_id'];
             let user_name = res['user_name'];
-            document.querySelector(".top_login").style.display="none";
+            document.querySelector(".before_login").style.display="none";
             document.querySelector(".success_login").style.display="block";
-            document.querySelector("#user_info").innerHTML(user_name);
+            document.querySelector("#user_info").innerHTML = user_name+"님";
         }
     })
 }
 
-window.onload = function(){
+setTimeout(() => {
     get_userinfo_FetchAPI();
-}
+}, 500)
+
+document.querySelector("#logout").addEventListener('click',function(){
+    sessionStorage.setItem("access_token","0");
+    document.querySelector(".before_login").style.display="block";
+    document.querySelector(".success_login").style.display="none";
+})

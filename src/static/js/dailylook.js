@@ -12,3 +12,5 @@ function image_load(event) {
         reader.readAsDataURL(image);
     }
 }
+
+document.querySelector("#signup_id")

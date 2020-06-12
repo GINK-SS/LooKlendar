@@ -54,8 +54,8 @@ body {
     clear: both;
 }
 .success_login img{
-    width: 30%;
-    height: 60%;
+    width: 50px;
+    height: 50px;
     vertical-align: middle;
     margin-bottom: 5%;
 }

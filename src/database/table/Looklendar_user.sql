@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS Looklendar_user(
     user_email VARCHAR(30) NOT NULL,
     user_name VARCHAR(20) NOT NULL,
     user_nickname VARCHAR(20) NOT NULL,
-    user_birth INT,
-    user_gender TINYINT DEFAULT 0,
+    user_birth DATETIME DEFAULT '1900-01-01',
+    user_gender TINYINT DEFAULT 1,
     user_date DATETIME NOT NULL,
     user_photo TEXT,
     PRIMARY KEY(user_id)

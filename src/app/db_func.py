@@ -1,6 +1,7 @@
 from pymysql import *
 import sys
 import re
+import datetime
 #ok# 공백 확인
 def isBlank(text):
     encText = text
@@ -32,13 +33,12 @@ def is_emailSpecial(text):
     SpeCount = re.findall(u'[^\w\s]', text)
 
     return SpeCount
-# 아직 안됨 ####한글 자음, 모음 확인 (온전한 한글이 아닌 것 확인)
+#ok# 한글 자음, 모음 확인 (온전한 한글이 아닌 것 확인)
 def isHangulzmo(text):
-    p = re.compile(u'[ㄱ-ㅎㅏ-ㅣ]+')
     encText = text
-    ZM = p.match(encText)
-
-    return ZM
+    zmoCount = re.findall(u'[\u3131-\u3163]+', encText)
+    
+    return zmoCount
 
 #ok# 이메일 형식인지 확인
 def is_emailFormat(text):
@@ -82,6 +82,22 @@ def user_email_check2(db, user_email, user_id):
         result = cursor.fetchone()
     if result:
         return "exist"        
+
+#ok# 생일 오류 확인 (1900년 이전이거나 오늘날짜보다 미래날짜를 입력했을 경우 및 생일 포맷인지를 확인)
+def birth_check(BIRTH):
+    system_date_format = '%Y%m%d'
+
+    try:
+        birthday = datetime.datetime.strptime(BIRTH, system_date_format)
+    except ValueError:
+        return "Wrong"
+    
+    if datetime.datetime.now() < birthday:
+        return "Wrong"
+    birthTuple = birthday.timetuple()
+    if birthTuple.tm_year < 1900:
+        return "Wrong"
+        
 #ok# 유저 정보 저장
 def user_insert(db, user_data):
     with db.cursor() as cursor:
@@ -140,16 +156,16 @@ def user_modify(db, user_new_data):
 
     return "SUCCESS"
 
-# 데일리 달력에 저장 
-def look_insert(db, user_id, look_data):
+#ok# 데일리 달력에 저장 
+def look_insert(db, look_data):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_look(look_title, look_photo, look_outer, look_top, look_bot, look_shoes, look_acc, look_date, user_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s;"
-        cursor.execute(query, (look_data, user_id,))
+        query = "INSERT INTO Looklendar_look(look_title, look_photo, look_outer, look_top, look_bot, look_shoes, look_acc, look_date, user_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, look_data)
     db.commit()
 
     return "success"
 
-# 데일리 달력 찾기
+#ok# 데일리 달력 찾기
 def look_select(db, user_id):
     with db.cursor() as cursor:
         query = "SELECT * FROM Looklendar_look WHERE user_id = %s;"
@@ -158,16 +174,16 @@ def look_select(db, user_id):
 
     return result
 
-# 데일리 달력 변경 
-def look_modify(db, look_new_data, look_num):
+#ok# 데일리 달력 변경 
+def look_modify(db, look_new_data):
     with db.cursor() as cursor:
         query = "UPDATE Looklendar_look SET look_title = %s, look_photo = %s, look_outer = %s, look_top = %s, look_bot = %s, look_shoes = %s, look_acc = %s WHERE look_num = %s;"
-        cursor.execute(query, (look_new_data, look_num,))
+        cursor.execute(query, look_new_data)
     db.commit()
 
     return "SUCCESS"
 
-#데일리 달력 삭제 
+#ok# 데일리 달력 삭제 
 def look_delete(db, look_num):
     with db.cursor() as cursor:
         query = "DELETE FROM Looklendar_look WHERE look_num = %s;"
@@ -176,7 +192,7 @@ def look_delete(db, look_num):
 
     return "success"
 
-# 일정 달력 찾기
+#ok# 일정 달력 찾기
 def event_select(db, user_id):
     with db.cursor() as cursor:
         query = "SELECT * FROM Looklendar_calendar WHERE user_id = %s;"
@@ -185,7 +201,7 @@ def event_select(db, user_id):
 
     return result
 
-# 일정 달력에 저장 
+#ok# 일정 달력에 저장 
 def event_insert(db, event_data):
     with db.cursor() as cursor:
         query = "INSERT INTO Looklendar_calendar(event_id, event_color, event_date1, event_date2, event_place, user_id) VALUES(%s, %s, %s, %s, %s, %s);"
@@ -194,16 +210,16 @@ def event_insert(db, event_data):
 
     return "success"
 
-# 일정 달력 변경 
-def event_modify(db, event_new_data, event_num):
+#ok# 일정 달력 변경 
+def event_modify(db, event_new_data):
     with db.cursor() as cursor:
         query = "UPDATE Looklendar_calendar SET event_id = %s, event_date1 = %s, event_date2 = %s, event_color = %s, event_place = %s WHERE event_num = %s;"
-        cursor.execute(query, (event_new_data, event_num,))
+        cursor.execute(query, event_new_data)
     db.commit()
 
     return "SUCCESS"
 
-#일정 달력 삭제 
+#ok# 일정 달력 삭제 
 def event_delete(db, event_num):
     with db.cursor() as cursor:
         query = "DELETE FROM Looklendar_calendar WHERE event_num = %s;"

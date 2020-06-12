@@ -124,6 +124,7 @@ function createNewList(val) {
 loadYYMM(init.today);
 loadDate(init.today.getDate(), init.today.getDay());
 
+document.querySelector(".cal-todaybtn").addEventListener('click', () => loadYYMM(init.today));
 $btnNext.addEventListener('click', () => loadYYMM(init.nextMonth()));
 $btnPrev.addEventListener('click', () => loadYYMM(init.prevMonth()));
 
@@ -153,7 +154,6 @@ document.querySelector(".modal_exit").addEventListener('click', function () {
 for (let plus of plus_button) {
     plus.addEventListener('click', function () {
         modal.style.display = "block";
-        var click_day = plus.previousSibling.previousSibling.innerHTML; // 누른 날짜의 day값
         // plus 버튼 누를때 마다 모든 input의 value 초기화 시키기
         var form = document.querySelector(".modal_form");
         for (var i = 0; i < form.children.length; i++) {
@@ -170,7 +170,8 @@ for (let plus of plus_button) {
 }
 
 // 날짜 입력란에 현재 날짜 기본 세팅하기
-document.querySelector('.modal_time').value = new Date().toISOString().substring(0, 10);
+document.querySelector('.modal_start_time').value = new Date().toISOString().substring(0, 10);
+document.querySelector('.modal_end_time').value = new Date().toISOString().substring(0, 10);
 
 var modal_selected = document.querySelector("#modal_select");
 
@@ -245,14 +246,62 @@ setTimeout(() => {
     }
 
     var date_all2 = document.querySelectorAll(".day");
-    console.log(document.querySelector(".day") + "왜 없는데 대체");
     for (let item of date_all2) {
         item.addEventListener('mouseenter', function () {
             item.lastChild.style.display = "block";
-            console.log(item.childNodes[1]);
         })
         item.addEventListener('mouseleave', function () {
             item.lastChild.style.display = "none";
         })
     }
 }, 500)
+
+
+/////////////////////////// 일정 입력하기 ////////////////////
+
+$("#modal_submit").on({
+    'click': ()=> {
+        calendar_FetchAPI_v1();
+    }
+})
+
+function calendar_FetchAPI_v1() {
+    
+    let mcolor = $(".modal_color option:selected").val();
+    if(mcolor == 'red') mcolor="#d63031";
+    else if(mcolor == 'orange') mcolor="#e17055";
+    else if(mcolor == 'yellow') mcolor="#fdcb6e";
+    else if(mcolor == 'green') mcolor="#00b894";
+    else if(mcolor == 'blue') mcolor="#0984e3";
+    else if(mcolor == 'purple') mcolor="#a29bfe";
+    else if(mcolor == 'gray') mcolor="#a29bfe";
+
+    let title = document.querySelector(".modal_title").value;
+    let place = document.querySelector(".modal_place").value;
+    let start_time = document.querySelector(".modal_start_time").value;
+    let end_time = document.querySelector(".modal_end_time").value;
+
+
+    let send_data ={
+        'event_color' : mcolor,
+        'event_id' : title,
+        'event_place' : place,
+        'event_date1' : start_time,
+        'event_date2' : end_time
+    };
+    console.log(send_data);
+    fetch('/', {
+        method : "POST",
+        headers : {
+            'Content-Type': "application/json"
+        },
+        body : JSON.stringify(send_data)
+    })
+    .then(res => res.json())
+    .then((res) => {
+        console.log(res);
+        if(res['STATUS']=="SUCCESS"){
+            console.log("일정 저장 완료!");
+        }
+    })
+}

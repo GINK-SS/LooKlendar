@@ -81,11 +81,16 @@ def auth__sign_up():
         return jsonify(
             STATUS = "EMAIL EXIST"
         )
-    #ok# 이름에 특수문자가 포함되어 있는지 확인
+    #ok# 이름에 특수문자나 자음 혹은 모음이 포함되어 있는지 확인
     name_special = isSpecial(NAME)
     if name_special or isHangulzmo(NAME):
         return jsonify(
             STATUS = "Wrong NAME"
+        )
+    #ok# 닉네임에 자음 혹은 모음이 포함되어 있는지 확인
+    if isHangulzmo(NICK):
+        return jsonify(
+            STATUS = "Wrong NICK"
         )
     ##### ok # 입력하지 않은 것 확인 ###############################
     ######################################################
@@ -139,16 +144,18 @@ def auth__sign_up():
         )
     #####################################################    
     #디비에 정보 삽입
-    #ok# 생년월일이나 사진을 입력하지 않았다면 NULL 입력
+    #ok# 생년월일을 입력하지 않았다면 NULL 입력
     if BIRTH == "":
         BIRTH = None
+    else:
+        #ok# 입력했을 시 올바르게 입력했는지 확인
+        if birth_check(BIRTH) == "Wrong":
+            return jsonify(
+                STATUS = "Wrong BIRTH"
+            )
+    #ok# 사진 첨부 안했다면 NULL 입력
     if PHOTO == "":
         PHOTO = None
-    # 생일란에 정신나간 놈이 기여코 숫자 말고 다른 걸 입력했을 때 차단
-    if not BIRTH.isdecimal():
-        return jsonify(
-            STATUS = "Wrong BIRTH"
-        )
 
     user_data = (
         ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
@@ -161,7 +168,10 @@ def auth__sign_up():
     # DB에 삽입 성공
     if func_result == "success":
         result = "SUCCESS"
-
+    else:
+        return jsonify(
+            STATUS = result
+        )
     # 결과 전송
     return jsonify(
         STATUS = result,
@@ -242,7 +252,18 @@ def auth__modify():
         return jsonify(
             STATUS = "INSERT EMAIL"
         )
-
+    #ok# 생년월일을 입력하지 않았다면 NULL 입력
+    if BIRTH == "":
+        BIRTH = None
+    else:
+        #ok# 입력했을 시 올바르게 입력했는지 확인
+        if birth_check(BIRTH) == "Wrong":
+            return jsonify(
+                STATUS = "Wrong BIRTH"
+            )
+    #ok# 사진 첨부 안했다면 NULL 입력
+    if PHOTO == "":
+        PHOTO = None
     ##ok## 수정할 때 글자 수 제한 ##
     #ok# 비밀번호가 너무 길면 돌려보낸다
     if len(PW) > 100:

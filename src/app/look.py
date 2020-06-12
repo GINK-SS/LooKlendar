@@ -14,9 +14,7 @@ from db_func import *
 
 BP = Blueprint('look', __name__)
 
-
-
-#본인의 데일리 달력 반환
+#ok# 본인의 데일리 달력 반환
 @BP.route('/look/main', methods = ['POST'])
 @jwt_required
 def look__look():
@@ -32,7 +30,7 @@ def look__look():
         RESULT = result
     )
 
-#본인의 데일리 달력에 저장
+#ok# 본인의 데일리 달력에 저장
 @BP.route('/look/upload', methods = ['POST'])
 @jwt_required
 def look__upload():
@@ -41,20 +39,35 @@ def look__upload():
         return jsonify(
             "FucKlendar"
         )
-    TITLE = request.form['title']
-    PHOTO = request.form['photo']
-    OUTER = request.form['outer']
-    TOP = request.form['top']
-    BOT = request.form['bot']
-    SHOES = request.form['shoes']
-    ACC = request.form['acc']
-    DATE = request.form['date']
-
+    TITLE = request.get_json()['title']
+    PHOTO = request.get_json()['photo']
+    OUTER = request.get_json()['outer']
+    TOP = request.get_json()['top']
+    BOT = request.get_json()['bot']
+    SHOES = request.get_json()['shoes']
+    ACC = request.get_json()['acc']
+    DATE = request.get_json()['date']
+    
+    # 제목과 상의는 필수 입력!!
+    if TITLE == "":
+        return jsonify(
+            STATUS = "EMPTY TITLE"
+        )
+    if TOP == "":
+        return jsonify(
+            STATUS = "EMPTY TOP"
+        )
+    
     #디비에 정보 삽입
     look_data = (
-        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC, DATE
+        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC, DATE, user['user_id']
     )
-    func_result = look_insert(g.db, user['user_id'], look_data)
+    # 제목과 상의 및 DATE, user_id 제외한 나머지 입력 안했을 시 NULL 입력
+    for data in look_data:
+        if data == "":
+            data = None
+
+    func_result = look_insert(g.db, look_data)
     
     ## result를 fail로 초기화
     result = "fail"
@@ -68,7 +81,7 @@ def look__upload():
         STATUS = result
     )
 
-#데일리 달력 수정 ##히오니한테 그 날의 날짜를 받는 걸로 일단 함
+#ok# 데일리 달력 수정
 @BP.route('/look/modify', methods = ['POST'])
 @jwt_required
 def look__modify():
@@ -77,24 +90,41 @@ def look__modify():
         return jsonify(
             "FucKlendar"
         )
-    TITLE = request.form['title']
-    PHOTO = request.form['photo']
-    OUTER = request.form['outer']
-    TOP = request.form['top']
-    BOT = request.form['bot']
-    SHOES = request.form['shoes']
-    ACC = request.form['acc']
-    NUM = request.form['num']
+    TITLE = request.get_json()['title']
+    PHOTO = request.get_json()['photo']
+    OUTER = request.get_json()['outer']
+    TOP = request.get_json()['top']
+    BOT = request.get_json()['bot']
+    SHOES = request.get_json()['shoes']
+    ACC = request.get_json()['acc']
+    NUM = request.get_json()['num']
 
+    # 제목과 상의는 필수 입력!!
+    if TITLE == "":
+        return jsonify(
+            STATUS = "EMPTY TITLE"
+        )
+    if TOP == "":
+        return jsonify(
+            STATUS = "EMPTY TOP"
+        )
+    
     look_new_data = (
-        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC
+        TITLE, PHOTO, OUTER, TOP, BOT, SHOES, ACC, NUM
     )
-    result = look_modify(g.db, look_new_data, NUM)
-    return jsonify(
-        STATUS = "SUCCESS"
-    )
+    # 제목과 상의 및 num 제외한 나머지 입력 안했을 시 NULL 입력
+    for data in look_new_data:
+        if data == "":
+            data = None
 
-#데일리 달력 삭제
+    result = look_modify(g.db, look_new_data)
+
+    if result == "SUCCESS":
+        return jsonify(
+            STATUS = "SUCCESS"
+        )
+
+#ok# 데일리 달력 삭제
 @BP.route('/look/delete', methods = ['POST'])
 @jwt_required
 def look__delete():
@@ -103,7 +133,7 @@ def look__delete():
         return jsonify(
             "FucKlendar"
         )
-    NUM = request.form['num']
+    NUM = request.get_json()['num']
     result = look_delete(g.db, NUM)
     
     ## 결과 전송

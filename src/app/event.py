@@ -42,7 +42,25 @@ def event__upload():
     DATE1 = request.get_json()['date1']
     DATE2 = request.get_json()['date2']
     PLACE = request.get_json()['place']
-    
+    ## 아무것도 입력 안했을 시 돌려보내기 ##
+    # ID에 입력 안했을 때
+    if ID == "":
+        return jsonify(
+            STATUS = "EMPTY TITLE"
+        )
+    # 날짜를 입력 안했을 때
+    if DATE1 == "" or DATE2 == "":
+        return jsonify(
+            STATUS = "EMPTY DATE"
+        )
+    # 날짜를 이상하게 입력했을 경우
+    if DATE1 > DATE2:
+        return jsonify(
+            STATUS = "Wrong DATE"
+        )
+    # 장소 입력 안했을 경우 NULL 값 입력
+    if PLACE == "":
+        PLACE = None
     #디비에 정보 삽입
     event_data = (
         ID, COLOR, DATE1, DATE2, PLACE, user['user_id']
@@ -77,10 +95,28 @@ def event__modify():
     PLACE = request.get_json()['place']
     NUM = request.get_json()['num']
 
+    ## 아무것도 입력 안했을 시 돌려보내기 ##
+    # ID에 입력 안했을 때
+    if ID == "":
+        return jsonify(
+            STATUS = "EMPTY TITLE"
+        )
+    # 날짜를 입력 안했을 때
+    if DATE1 == "" or DATE2 == "":
+        return jsonify(
+            STATUS = "EMPTY DATE"
+        )
+    if DATE1 > DATE2:
+        return jsonify(
+            STATUS = "Wrong DATE"
+        )
+    # 장소 입력 안했을 경우 NULL 값 입력
+    if PLACE == "":
+        PLACE = None
     event_new_data = (
-        ID, DATE1, DATE2, COLOR, PLACE
+        ID, DATE1, DATE2, COLOR, PLACE, NUM
     )
-    result = event_modify(g.db, event_new_data, NUM)
+    result = event_modify(g.db, event_new_data)
     return jsonify(
         STATUS = "SUCCESS"
     )

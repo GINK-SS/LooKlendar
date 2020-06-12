@@ -8,10 +8,6 @@ function login_FetchAPI_v1() {
     
     let id = document.querySelector("#login_id").value;
     let pw = document.querySelector("#login_pw").value;
-    // const sl = document.querySelector(".success_login");
-    // const tl = document.querySelector(".login-form");
-    // console.log(sl);
-    // console.log(tl);
 
     let send_data ={
         'id' : id,
@@ -28,12 +24,16 @@ function login_FetchAPI_v1() {
     .then(res => res.json())
     .then((res) => {
         console.log(res);
-        console.log(send_data);
         if(res['STATUS']=="SUCCESS"){
-            console.log("로그인됨");
-            sessionStorage.setItem('access_token', res['access_token']);
+            console.log("로그인됨!!! 왜안바뀌지");            
+            sessionStorage.setItem('access_token', "Bearer "+res['access_token']);
             window.location.href="http://localhost:5000/";
         }
+        else if(res['STATUS'] == "INCORRECT ID"){
+            alert("존재하지 않는 ID입니다.");
+        }
+        else if(res['STATUS'] == "INCORRECT PW"){
+            alert("비밀번호를 확인해주세요.");
+        }
     })
-    
 }

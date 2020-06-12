@@ -59,7 +59,8 @@
       <a class="before_login" href="/login">login</a>
       <div class="success_login">
         <img src="../static/image/user_image.jpg">
-        <span id="user_info">임희원님</span>
+        <span id="user_info"></span>
+        <button id="logout">logout</button>
       </div>
     </div>
     
@@ -79,167 +80,29 @@
           <div class="ctr-box clearfix">
             <button type="button" title="prev" class="btn-cal prev">
             </button>
+            <button class="cal-todaybtn">today</button>
             <span class="cal-month"></span>
             <span class="cal-year"></span>
             <button type="button" title="next" class="btn-cal next">
             </button>
           </div>
+          <div class="cal-head">
+            <span>일</span>
+            <span>월</span>
+            <span>화</span>
+            <span>수</span>
+            <span>목</span>
+            <span>금</span>
+            <span>토</span>
+          </div>
           <table class="cal-table">
-            <thead>
-              <tr class="cal-dday">
-                <th>일</th>
-                <th>월</th>
-                <th>화</th>
-                <th>수</th>
-                <th>목</th>
-                <th>금</th>
-                <th>토</th>
-              </tr>
-            </thead>
             <tbody class="cal-body"></tbody>
           </table>
         </div>
       </div>
-      <!-- // .my-calendar -->
     </div>
 
-
-    <div class="day-of-week">
-      <div>일</div>
-      <div>월</div>
-      <div>화</div>
-      <div>수</div>
-      <div>목</div>
-      <div>금</div>
-      <div>토</div>
-    </div>
-    <div class="date-grid">
-      <div class="date-day">
-        <div datetime="2020-05-01">1</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-02">2</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-03">3</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-04">4</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-05">5</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-06">6</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-07">7</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-08">8</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-09">9</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-10">10</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-11">11</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-12">12</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-13">13</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-14">14</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-15">15</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-16">16</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-17">17</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-18">18</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-19">19</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-20">20</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-21">21</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-22">22</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-23">23</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-24">24</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-25">25</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-26">26</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-27">27</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-28">28</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-29">29</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-30">30</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-      <div class="date-day">
-        <div datetime="2020-05-31">31</div>
-        <button class="calendar_plus_button">+</button>
-      </div>
-    </div>
-
+    <!-- /////////// 일정 입력 모달창 /////////// -->
     <div class="modal_background">
       <div class="modal_box">
         <span class="modal_exit">X</span>
@@ -258,7 +121,8 @@
             <option value="modal_select_look">데일리룩</option>
           </select><br>
           <input type="text" class="modal_title" placeholder="제목 입력"><br>
-          <input type="date" class="modal_time" placeholder="날짜 입력"><br>
+          <input type="date" class="modal_start_time" placeholder="시작 날짜 입력"><br>
+          <input type="date" class="modal_end_time" placeholder="종료 날짜 입력"><br>
           <input type="text" class="modal_place" placeholder="위치 추가"><br>
 
           <input type="text" class="modal_outer" placeholder="아우터">
@@ -267,11 +131,10 @@
           <input type="text" class="modal_shoes" placeholder="신발">
           <input type="text" class="modal_acc" placeholder="악세서리">
           
-
           <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" multiple />
           <div id="modal_image_container"></div>
 
-          <button type="submit">저장</button>
+          <button id="modal_submit">저장</button>
         </div>
       </div>
     </div>
@@ -283,6 +146,5 @@
 <link rel="stylesheet" type="text/css" href="../static/css/calendar.css">
 <script type="text/javascript" src="../static/js/main.js"></script>
 <script type="text/javascript" src="../static/js/calendar.js"></script>
-
 
 </html>
