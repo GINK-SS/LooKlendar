@@ -61,6 +61,9 @@ def dailylook():
 def developer():
     return render_template('developer.html')
 
+@app.route("/mypage")
+def mypage():
+    return render_template('mypage.html')
 
 ### 실행
 if __name__ == '__main__':

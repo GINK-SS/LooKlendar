@@ -4,43 +4,46 @@ $("#signup_button").on({
     }
 })
 
-function signup_FetchAPI_v1() {
-
+function signup_FetchAPI_v1(){
+    
     let id = document.querySelector("#signup_id").value;
     let pw = document.querySelector("#signup_pw").value;
     let pw2 = document.querySelector("#signup_pw2").value;
     let email = document.querySelector("#signup_email").value;
     let name = document.querySelector("#signup_name").value;
-    let nick = document.querySelector("#signup_nickname").value;
-    let birth = document.querySelector("#signup_birth").value;
-    let gender = $("input[type=radio][name=gender]:checked").val();
-    let photo = document.querySelector("#signup_photo").value;
-
-    let send_data ={
-        'id' : id,
-        'pw' : pw,
-        'pw2' : pw2,
-        'email' : email,
-        'name' : name,
-        'nick' : nick,
-        'birth':birth,
-        'gender' : gender,
-        'photo' : photo
-    };
-    console.log(send_data);
-    fetch('/auth/sign_up', {
-        method : "POST",
-        headers : {
-            'Content-Type': "application/json"
-        },
-        body : JSON.stringify(send_data)
+    var nick = document.querySelector("#signup_nickname").value;
+    var birth = document.querySelector("#signup_birth").value;
+    var gender = $("input[type=radio][name=gender]:checked").val();
+    
+    if(document.querySelector("#signup_photo").files.length == 0){
+        file = new File(["user_image1"],"user_image1.jpg", {type : "image/jpeg"});
+    }
+    else file = document.querySelector("#signup_photo").files[0];
+    console.log(file);
+    
+    var send_data = new FormData();
+    
+    send_data.append('id', id);
+    send_data.append('pw', pw);
+    send_data.append('pw2', pw2);
+    send_data.append('email', email);
+    send_data.append('name', name);
+    send_data.append('nick', nick);
+    send_data.append('birth', birth);
+    send_data.append('gender', gender);
+    send_data.append('file', file);
+    
+    fetch("/auth/sign_up",{
+        method:"POST",
+        headers:{},
+        body : send_data
     })
     .then(res => res.json())
-    .then((res) => {
+    .then(res => {
         console.log(res);
         if(res['STATUS'] == "SUCCESS"){
-            alert("회원가입 완료! 환영합니다. "+ send_data['name'] + "님!");
-            window.location.href="http://localhost:5000/login";
+            alert("회원가입 완료! 환영합니다. "+ name + "님!");
+            window.location.href="/login";
         }
         else if(res['STATUS'] == "ID EXIST"){
             alert("이미 존재하는 ID입니다.");
@@ -106,12 +109,31 @@ function signup_FetchAPI_v1() {
             alert("알 수 없는 오류가 발생하였습니다. 다시 시도 해주세요.");
         }
     })
-    // .then(res => res.json())
-    // .then((res)=> {
-    //     console.log("Why!!");
-    //     // console.log(res);
-    //     console.log(send_data);
-    //     // 여기 코딩
-    // });
+    .catch(err => console.log(err))
 
 }
+
+function image_load(event) {
+    for (var image of event.target.files) {
+        var reader = new FileReader();
+        var container = document.querySelector("#modal_image_container");
+        reader.onload = function (event) {
+            var img = document.createElement("img");
+            img.setAttribute("src", event.target.result);
+            img.style.width = "200px";
+            img.style.height = "200px";
+            img.style.margin ="10px";
+
+            // 이미지 업로드 할때마다 이미 업로드되어있던 이미지는 삭제
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            container.appendChild(img);
+        };
+        reader.readAsDataURL(image);
+    }
+}
+
+document.querySelector(".home").addEventListener("click",function(){
+    window.location.href="/";
+})

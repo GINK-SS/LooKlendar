@@ -1,0 +1,94 @@
+<header>
+
+</header>
+
+<body>
+    <div class="mypage">
+        <h1><img src="../static/files/home.png" class="home" width="50px" height="50px">My Page</h1>
+        <div class="mypage_form">
+            <div class="mypage_box">
+                <div id="userinfo">
+                    <span>아이디 : </span><span id="mypage_id"></span>
+                </div>
+                <div id="userinfo">
+                    <span>이메일 : </span><span id="mypage_email"></span>
+                </div>
+                <div id="userinfo">
+                    <span>이름 : </span><span id="mypage_name"></span>
+                </div>
+                <div id="userinfo">
+                    <span>닉네임 : </span><span id="mypage_nickname"></span>
+                </div>
+                <div id="userinfo">
+                    <span>성별 : </span><span id="mypage_gender"></span>
+                </div>
+                <div id="userinfo">
+                    <span>생년월일 : </span><span id="mypage_birth"></span>
+                </div>
+                <div id="userinfo">
+                   <span>프로필 사진 : </span>
+                    <img src="" id="user_image">
+                </div>
+                <button id="userinfo_modify" class="userinfo_modify">회원정보 수정</button>
+                <button id="password_modify" class="userinfo_modify">비밀번호 변경</button>
+            </div>
+
+
+            <!--------------------------- 회원정보 변경 모달 ----------------------->
+            <div id="userinfo_modify_modal_background" class="modal_background">
+                <div class="userinfo_modify_modal_box modal_box">
+                    <span id="user_modal_exit" class="modal_exit">X</span>
+                    <div class="modal_form">
+                        <div>
+                            * E-mail : 특수문자 X / ex) look@sejong.com
+                            <input type="text" placeholder="이메일 입력" id="modify_email" class="text" autocomplete="off">
+                        </div>
+                        <div>
+                            * Nickname :
+                            <input type="text" placeholder="닉네임 입력" id="modify_nickname" class="text" autocomplete="off">
+                        </div>
+                        <div>
+                            Gender :
+                            <input type="radio" name="gender" value="1" checked>남
+                            <input type="radio" name="gender" value="2">여
+                        </div></br>
+                        <div>
+                            Birth : 8자리 ex)19970101
+                            <input type="text" placeholder="생년월일 입력" id="modify_birth" maxlength="8" class="text" autocomplete="off"> 
+                        </div>
+                        <div>
+                            * 프로필 사진 :
+                            <input type="file" class="modal_image" id="modify_photo" accept="image/*"
+                                onchange="image_load(event);"/>          
+                            <div id="modal_image_container"></div>
+                        </div></br>
+                        <button id="modify_button" class="modify_btn">수정하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!------------------------ 비밀번호 변경 모달 -------------------------->
+        <div id="pw_modify_modal_background" class="modal_background">
+            <div class="userinfo_modify_modal_box modal_box">
+                <span id="pw_modal_exit" class="modal_exit">X</span>
+                <div class="modal_form">
+                    <div>
+                        * PW : 100자 미만
+                        <input type="password" placeholder="비밀번호 입력" id="modify_pw" class="text" autocomplete="off">
+                    </div>
+                    <div>
+                        * PW check :
+                        <input type="password" placeholder="비밀번호 확인" id="modify_pw2" class="text" autocomplete="off">
+                    </div>
+                    <button id="pw_modify_button" class="modify_btn">수정하기</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<link rel="stylesheet" type="text/css" href="../static/css/mypage.css">
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="../static/js/mypage.js"></script>

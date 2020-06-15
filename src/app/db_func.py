@@ -2,6 +2,14 @@ from pymysql import *
 import sys
 import re
 from datetime import datetime
+from werkzeug.utils import secure_filename
+from pprint import pprint
+#from PIL import Image
+
+UPLOAD_PATH = "/static/files/"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
+IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
+
 #ok# 공백 확인
 def isBlank(text):
     encText = text
@@ -74,6 +82,16 @@ def user_email_check(db, user_email):
         result = cursor.fetchone()
     if result:
         return "exist"
+
+# 닉네임 수정 시 중복확인 (대소문자 구별 X)
+def user_nick_check2(db, user_nickname, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT user_nickname FROM Looklendar_user WHERE user_nickname = %s AND user_id <> %s;"
+        cursor.execute(query, (user_nickname, user_id,))
+        result = cursor.fetchone()
+    if result:
+        return "exist"
+
 #ok# 이메일 수정 시 중복확인 (대소문자 구별 X, 본인 원래 이메일은 제외)
 def user_email_check2(db, user_email, user_id):
     with db.cursor() as cursor:
@@ -150,17 +168,29 @@ def user_pw_modify(db, new_pw, user_id):
 #ok# 유저 정보 변경
 def user_modify(db, user_new_data):
     with db.cursor() as cursor:
-        query = "UPDATE Looklendar_user SET user_pw = %s, user_email = %s, user_birth = %s, user_gender = %s, user_photo = %s WHERE user_id = %s;"
+        query = "UPDATE Looklendar_user SET user_email = %s, user_nickname = %s, user_birth = %s, user_gender = %s, user_photo = %s WHERE user_id = %s;"
         cursor.execute(query, user_new_data)
     db.commit()
 
     return "SUCCESS"
 
-#ok# 데일리 달력에 저장 
-def look_insert(db, look_data):
+# 유저 정보 삭제 (회원탈퇴)
+def user_out(db, user_id):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_look(look_title, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc, look_date, user_id) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        query = "DELETE FROM Looklendar_user WHERE user_id = %s;"
+        cursor.execute(query, (user_id,))
+    db.commit()
+
+    return "SUCCESS"
+
+#ok# 데일리 달력에 저장 
+def look_insert(db, look_data, look_data2):
+    with db.cursor() as cursor:
+        query = "INSERT INTO Looklendar_calendar(event_title, event_color, user_id, event_date, event_place) VALUES(%s, %s, %s, %s, %s);"
         cursor.execute(query, look_data)
+        db.commit()
+        query = "INSERT INTO Looklendar_look(look_num, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc) VALUES((SELECT event_num FROM Looklendar_calendar WHERE user_id = %s AND event_date = %s), %s, %s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, look_data2)
     db.commit()
 
     return "success"
@@ -168,26 +198,28 @@ def look_insert(db, look_data):
 #ok# 데일리 달력 찾기
 def look_select(db, user_id):
     with db.cursor() as cursor:
-        query = "SELECT * FROM Looklendar_look WHERE user_id = %s;"
+        query = "SELECT event_num, event_title, event_color, user_id, CONCAT(year(event_date), '-', IF(LENGTH(month(event_date))<>2, CONCAT('0', month(event_date)), month(event_date)), '-', IF(LENGTH(day(event_date))<>2, CONCAT('0', day(event_date)), day(event_date))) AS event_date, event_place, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc FROM v_Looklendar_look WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
-
+        pprint(result)
     return result
 
 #ok# 데일리 달력 변경 
-def look_modify(db, look_new_data):
+def look_modify(db, look_new_data, look_new_data2):
     with db.cursor() as cursor:
-        query = "UPDATE Looklendar_look SET look_title = %s, look_photo = %s, look_outer = %s, look_top = %s, look_bot = %s, look_shoes = %s, look_acc = %s WHERE look_num = %s;"
+        query = "UPDATE Looklendar_calendar SET event_title = %s, event_color = %s, event_date = %s, event_place = %s WHERE event_num = %s;"
         cursor.execute(query, look_new_data)
+        query = "UPDATE Looklendar_look SET look_photo = %s, look_s_photo = %s, look_outer = %s, look_top = %s, look_bot = %s, look_shoes = %s, look_acc = %s WHERE look_num = %s;"
+        cursor.execute(query, look_new_data2)
     db.commit()
 
     return "SUCCESS"
 
 #ok# 데일리 달력 삭제 
-def look_delete(db, look_num):
+def look_delete(db, event_num):
     with db.cursor() as cursor:
-        query = "DELETE FROM Looklendar_look WHERE look_num = %s;"
-        cursor.execute(query, (look_num,))
+        query = "DELETE FROM Looklendar_calendar WHERE event_num = %s;"
+        cursor.execute(query, (event_num,))
     db.commit()
 
     return "success"
@@ -196,7 +228,7 @@ def look_delete(db, look_num):
 def event_select(db, user_id):
     with db.cursor() as cursor:
         # 희원이한테 날짜를 문자열로 줘야하는데 아니면은 이상하게 나와서 처음엔 간단한 %Y 이런식으로 했는데 이게 파이썬에서 뭘 받는 걸로 인식을 해서 년도, 월, 일 따로 받았는데 따로 떨어져 있어서 CONCAT으로 묶었지만 한자리면은 한자리 수만 나와서 그 앞에 IF문을 사용해서 한자리면 앞에 0을 붙이게 출력하도록 함
-        query = "SELECT event_num, event_id, event_color, user_id, CONCAT(year(event_date1), '.', IF(LENGTH(month(event_date1))<>2, CONCAT('0', month(event_date1)), month(event_date1)), '.', IF(LENGTH(day(event_date1))<>2, CONCAT('0', day(event_date1)), day(event_date1))) AS event_date1, CONCAT(year(event_date2), '.', IF(LENGTH(month(event_date2))<>2, CONCAT('0', month(event_date2)), month(event_date2)), '.', IF(LENGTH(day(event_date2))<>2, CONCAT('0', day(event_date2)), day(event_date2))) AS event_date2, event_place FROM Looklendar_calendar WHERE user_id = %s;"
+        query = "SELECT event_num, event_title, event_color, user_id, CONCAT(year(event_date), '-', IF(LENGTH(month(event_date))<>2, CONCAT('0', month(event_date)), month(event_date)), '-', IF(LENGTH(day(event_date))<>2, CONCAT('0', day(event_date)), day(event_date))) AS event_date, event_place FROM Looklendar_calendar WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
 
@@ -205,7 +237,7 @@ def event_select(db, user_id):
 #ok# 일정 달력에 저장 
 def event_insert(db, event_data):
     with db.cursor() as cursor:
-        query = "INSERT INTO Looklendar_calendar(event_id, event_color, event_date1, event_date2, event_place, user_id) VALUES(%s, %s, %s, %s, %s, %s);"
+        query = "INSERT INTO Looklendar_calendar(event_title, event_color, event_date, event_place, user_id) VALUES(%s, %s, %s, %s, %s);"
         cursor.execute(query, event_data)
     db.commit()
 
@@ -214,7 +246,7 @@ def event_insert(db, event_data):
 #ok# 일정 달력 변경 
 def event_modify(db, event_new_data):
     with db.cursor() as cursor:
-        query = "UPDATE Looklendar_calendar SET event_id = %s, event_date1 = %s, event_date2 = %s, event_color = %s, event_place = %s WHERE event_num = %s;"
+        query = "UPDATE Looklendar_calendar SET event_title = %s, event_date = %s, event_color = %s, event_place = %s WHERE event_num = %s;"
         cursor.execute(query, event_new_data)
     db.commit()
 
@@ -228,3 +260,32 @@ def event_delete(db, event_num):
     db.commit()
 
     return "success"
+
+# 파일 이름/경로 생성 및 확장자/길이 확인(이미지만! 원본 + 미리보기) 
+def file_name_encode(file_name):
+    # 허용 확장자 / 길이인지 확인
+    if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS and len(file_name) < 240:
+
+        #원본 파일
+        path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
+        if file_name == "user_image1.jpg":
+            path_name = "user_image1.jpg"
+        if file_name == "look_default.png":
+            path_name = "look_default.png"
+        # 미리보기 파일
+        s_path_name = 'S-' + path_name
+
+        return {"original": path_name, "resize": s_path_name}
+
+    else:
+        return None
+
+#파일 사이즈 측정 ##수정 필요
+def files_size_check(Files):
+    files_size = 0
+    files_size += len(Files.read())
+    #총 파일 크기 50MB 제한 
+    if files_size < (30 * (1024 ** 2)):
+        return True
+    else:
+        return False

@@ -8,8 +8,7 @@ from flask import *
 from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
-from PIL import Image
-from werkzeug.utils import secure_filename
+
 import datetime
 #from flask_mail import Mail, Message
 #import time
@@ -74,7 +73,7 @@ def auth__sign_up():
     email_special = is_emailSpecial(EMAIL)
     if email_hangul or email_special or not is_emailFormat(EMAIL):
         return jsonify(
-            STATUS = "Wrong EMAIL or NOT EMAIL get_json()AT"
+            STATUS = "Wrong EMAIL or NOT EMAIL FORMAT"
         )
     #ok# 오타방지용 비밀번호 두번 입력 후 일치 확인
     if PW != PW2:
@@ -159,8 +158,10 @@ def auth__sign_up():
             return jsonify(
                 STATUS = "Wrong BIRTH"
             )
+    # 사진 등록 했다면 (등록 안했으면 기본이미지)
     if files:
         file_check = file_name_encode(files.filename)
+        # 확장자 및 경로 및 이름 생성
         if file_check is not None:
             PHOTO = file_check['original']
         else:
@@ -172,11 +173,11 @@ def auth__sign_up():
         )
         func_result = user_insert(g.db, user_data)
         if func_result == "success":
-            files.save('.' + UPLOAD_PATH + file_check['original'])
-    #ok# 사진 첨부 안했다면 NULL 입력
+            if PHOTO != "user_image1.jpg":
+                files.save('.' + UPLOAD_PATH + file_check['original'])        
+    # 수정필요 근데 여기로 절대 안들어감 # 사진 첨부 안했다면 NULL 입력
     else:
-        PHOTO = None
-
+        PHOTO = "user_image1.jpg"
         user_data = (
             ID, generate_password_hash(PW), EMAIL, NAME, NICK, BIRTH, GENDER, PHOTO
         )
@@ -235,18 +236,18 @@ def auth__modify():
     if user is None:
         return jsonify(
             "FucKlendar"
-        )    
-    PW = request.get_json()['pw']
-    PW2 = request.get_json()['pw2']
-    EMAIL = request.get_json()['email']
-    BIRTH = request.get_json()['birth']
-    GENDER = request.get_json()['gender']
-    PHOTO = request.get_json()['photo']
+        )
+    NICK = request.form['nick']
+    EMAIL = request.form['email']
+    BIRTH = request.form['birth']
+    GENDER = request.form['gender']
+    files = request.files['file']
     
-    #ok# 오타방지용 비밀번호 두번 입력 후 일치 확인
-    if PW != PW2:
+    # 닉네임 중복확인 (대소문자 구별 X, 본인의 기존 닉네임 제외)
+    nick_result = user_nick_check2(g.db, NICK, user['user_id'])
+    if nick_result == "exist":
         return jsonify(
-            STATUS = "PW MATCH FAIL"
+            STATUS = "NICK EXIST"
         )
     #ok# 이메일 중복확인 (대소문자 구별 X, 본인의 기존 이메일은 제외)
     email_result = user_email_check2(g.db, EMAIL, user['user_id'])
@@ -259,13 +260,13 @@ def auth__modify():
     email_special = is_emailSpecial(EMAIL)
     if email_hangul or email_special or not is_emailFormat(EMAIL):
         return jsonify(
-            STATUS = "Wrong EMAIL or NOT EMAIL get_json()AT"
+            STATUS = "Wrong EMAIL or NOT EMAIL FORMAT"
         )
     ##ok## 수정할 때 입력 여부 확인 ##
-    #ok# 비밀번호를 입력하지 않았으면 돌려보낸다
-    if PW == "":
+    # 닉네임을 입력하지 않았으면 돌려보낸다
+    if NICK == "":
         return jsonify(
-            STATUS = "INSERT PW"
+            STATUS = "INSERT NICK"
         )
     #ok# 이메일을 입력하지 않았으면 돌려보낸다
     if EMAIL == "":
@@ -281,28 +282,69 @@ def auth__modify():
             return jsonify(
                 STATUS = "Wrong BIRTH"
             )
-    #ok# 사진 첨부 안했다면 NULL 입력
-    if PHOTO == "":
-        PHOTO = None
     ##ok## 수정할 때 글자 수 제한 ##
-    #ok# 비밀번호가 너무 길면 돌려보낸다
-    if len(PW) > 100:
+    # 닉네임이 너무 길면 돌려보낸다
+    if len(NICK) > 20:
         return jsonify(
-            STATUS = "LONG PW"
+            STATUS = "LONG NICK"
         )
     #ok# 이메일이 너무 길면 돌려보낸다
     if len(EMAIL) > 30:
         return jsonify(
             STATUS = "LONG EMAIL"
         )
-
-    user_new_data = (
-        generate_password_hash(PW), EMAIL, BIRTH, GENDER, PHOTO, user['user_id']
-    )
-    result = user_modify(g.db, user_new_data)
-    return jsonify(
-        STATUS = "SUCCESS"
-    )
+    #ok# 사진 등록을 했다면
+    if files:
+        file_check = file_name_encode(files.filename)
+        # 확장자 및 경로 및 이름 생성
+        if file_check is not None:
+            PHOTO = file_check['original']
+        else:
+            return jsonify(
+                STATUS = "Wrong PHOTO"
+            )
+        user_new_data = (
+            EMAIL, NICK, BIRTH, GENDER, PHOTO, user['user_id']
+        )
+        result = user_modify(g.db, user_new_data)
+        if result == "SUCCESS":
+            if PHOTO != "user_image1.jpg":
+                files.save('.' + UPLOAD_PATH + file_check['original'])
+            return jsonify(
+                STATUS = "SUCCESS"
+            )
+    #ok# 사진 첨부 안했다면 NULL 입력
+    else:
+        PHOTO = "user_image1.jpg"
+        user_new_data = (
+            EMAIL, NICK, BIRTH, GENDER, PHOTO, user['user_id']
+        )
+        result = user_modify(g.db, user_new_data)
+        if result == "SUCCESS":
+            return jsonify(
+                STATUS = "SUCCESS"
+            )
+# 비밀번호 변경
+@BP.route('/auth/modify_pw', methods = ['POST'])
+@jwt_required
+def auth__modify_pw():
+    user = user_select(g.db, get_jwt_identity())
+    if user is None:
+        return jsonify(
+            "FucKlendar"
+        )
+    PW = request.get_json()['pw']
+    PW2 = request.get_json()['pw2']
+    #ok# 오타방지용 비밀번호 두번 입력 후 일치 확인
+    if PW != PW2:
+        return jsonify(
+            STATUS = "PW MATCH FAIL"
+        )
+    result = user_pw_modify(g.db, generate_password_hash(PW), user['user_id'])
+    if result == "SUCCESS":
+        return jsonify(
+            STATUS = "SUCCESS"
+        )
 
 #ok#아이디 찾기
 @BP.route('/auth/find_id', methods = ['POST'])
@@ -360,9 +402,35 @@ def get_userinfo():
         result = "success",
         user_id = user['user_id'],
         user_name = user['user_name'],
-        user_nick = user['user_nickname']
+        user_nick = user['user_nickname'],
+        user_photo = user['user_photo'],
+        user_email = user['user_email'],
+        user_birth = str(user['user_birth']),
+        user_gender = user['user_gender']
     )
+# 회원탈퇴
+@BP.route('/auth/authout', methods = ['POST'])
+@jwt_required
+def auth__out():
+    user = user_select(g.db, get_jwt_identity())
+    if user is None:
+        return jsonify(
+            "FucKlendar"
+        )
+    PW = request.get_json()['pw']
 
+    if check_password_hash(user['user_pw'], PW):
+        user_out(g.db, user['user_id'])
+        return jsonify(
+            STATUS = "SUCCESS"
+        )
+    else:
+        return jsonify(
+            STATUS = "Wrong PW"
+        )
+
+
+    
 ##########################################################################
 ###### 비밀번호 찾기를 위한 이메일 보내기 이메일 내용으로 비밀번호 변경 ## 수정 필요########
 ##########################################################################
@@ -410,17 +478,3 @@ def get_userinfo():
 ############################################################################
 ############################################################################
 # 파일 이름 변환 ##수정 필요
-def file_name_encode(file_name):
-    # 허용 확장자 / 길이인지 확인
-    if secure_filename(file_name).split('.')[-1].lower() in IMG_EXTENSIONS and len(file_name) < 240:
-
-        #원본 파일
-        path_name = str(datetime.today().strftime("%Y%m%d%H%M%S%f")) + '_' + file_name
-        
-        # 미리보기 파일
-        s_path_name = 'S-' + path_name
-
-        return {"original": path_name, "resize": s_path_name}
-
-    else:
-        return None

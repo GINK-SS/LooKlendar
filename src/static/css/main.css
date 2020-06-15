@@ -39,6 +39,7 @@ body {
 .top_title {
     flex: 1;
     font-weight: bold;
+    font-size: 1em;
 }
 
 .top_login {
@@ -58,6 +59,7 @@ body {
     height: 50px;
     vertical-align: middle;
     margin-bottom: 5%;
+    border-radius: 5px;
 }
 
 /* 토글 버튼 CSS */
@@ -79,8 +81,8 @@ body {
 #top_toggle_button .circle:before {
     content: 'CALENDAR';
     position: absolute;
-    top: 2.5%;
-    left: 65%;
+    top: 17px;
+    left: 57.5%;
     width: 10%;
     height: 40px;
     color: #fff;
@@ -123,7 +125,7 @@ body {
     padding: 0 1em;
 }
 .side_menu{
-    z-index: 888;
+    z-index: 996;
 }
 
 /* HAMBURGER STYLES ----- */
@@ -338,19 +340,18 @@ a.menu-icon.closed {
     background: fade(#000, 85%);
     z-index: 998;
     display: none;
-    opacity:0.8;
+    opacity:0.9;
 }
 
 .modal_box{
-    background: white;
-    height: 50%;
+    background: rgba(0, 0, 0, 0.18);
+    height: 70%;
     width: 50%;
     overflow: auto;
     margin: auto;
     position: absolute;
     top:0; left:0; bottom:0; right:0;
     z-index: 999;
-    opacity: 1;
 }
 
 .modal_exit{
@@ -370,8 +371,55 @@ a.menu-icon.closed {
     background:#74b9ff;
 }
 
+.modal_form{
+    padding: 1em;
+    color: #fff;
+    background: #ddd;
+    transition: all .3s;
+    font-weight: bold;
+    border-radius: 5px;
+}
 .modal_form input{
-    text-align: center;
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    width: 94.5%;
+    border: none;
+    padding: 0.7em;
+    margin: 0.7em;
+    border: solid 1px rgba(255, 255, 255, 0.37);
+    font-family: 'Roboto', sans-serif;
+}
+.modal_form select{
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    width: 35%;
+    border: none;
+    padding: 0.7em;
+    margin: 0.7em;
+    float: left;
+    border: solid 1px rgba(255, 255, 255, 0.37);
+    font-family: 'Roboto', sans-serif;
+}
+
+#modal_submit{
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: #a4d1ff;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+    width: 94.5%;
+    margin: 0.7em;
+    letter-spacing: 2px;
+}
+#modal_submit:hover{
+    transition: .5s all;
+    background: #74b9ff;
 }
 
 .modal_color{
@@ -385,5 +433,35 @@ a.menu-icon.closed {
 .modal_image, .modal_outer, .modal_top, .modal_bot, .modal_shoes, .modal_acc{
     display: none;
 }
-
-
+#user_info{
+    cursor: pointer;
+    font-weight: bold;
+    padding: 6px;
+    border-radius: 5px;
+    border: solid whitesmoke;
+    margin: 5px;
+}
+#user_info:hover{
+    background: whitesmoke;
+}
+.user_div{
+    background: whitesmoke;
+    display: none;
+    height: 100px;
+    transition: .5s all;
+}
+.user_div_btn{
+    width: 80%;
+    height: 44px;
+    margin-top: 4px;
+    background: white;
+    border: solid 2px #74b9ff;
+    color: #74b9ff;
+    font-weight: bold;
+    z-index: 997;
+    cursor: pointer;
+}
+.user_div_btn:hover{
+    background: #0984e3;
+    color: white;
+}

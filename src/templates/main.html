@@ -25,31 +25,25 @@
         <h2 class="menu_title">LooKlendar</h2>
         <div class="menu_line"></div>
         <ul class="menu_list">
-          <li class="menu_list_item"><a href="#">마이페이지</a></li>
-          <li class="menu_list_item"><a href="#">자유게시판</a></li>
+          <li class="menu_list_item"><a href="/mypage">마이페이지</a></li>
           <li class="menu_list_item"><a href="/dailylook">데일리룩</a></li>
           <li class="menu_list_item"><a href="/developer">개발자</a></li>
         </ul>
         <div class="menu_line"></div>
-        <div class="spacer_box">
-          <p>This is a spacer box.</p>
-        </div>
       </div>
     </div>
 
     <div class="top_date_button">
-      <span class="top_date_left">
-        <</span> <span class="top_date_right">>
-      </span>
+      
     </div>
 
-    <span class="top_date">2020년 5월</span>
+    <!-- <span class="top_date">2020년</span> -->
 
     <span class="top_title">LooKlendar</span>
 
     <div class="top_toggle">
       <div id="top_toggle_button">
-        <input type="checkbox" class="checkbox">
+        <input type="checkbox" class="checkbox" onchange="calendar_mode()">
         <div class="circle"></div>
         <div class="layer"></div>
       </div>
@@ -58,9 +52,13 @@
     <div class="top_login">
       <a class="before_login" href="/login">login</a>
       <div class="success_login">
-        <img src="../static/image/user_image.jpg">
+        <img src="../static/files/user_image1.jpg" id="user_image">
         <span id="user_info"></span>
-        <button id="logout">logout</button>
+        <div class="user_div">
+          <div><button id="mypage" class="user_div_btn" onclick="go_mypage()">마이페이지</button></div>
+          <div><button id="logout" class="user_div_btn">로그아웃</button></div>
+        </div>
+        
       </div>
     </div>
     
@@ -72,15 +70,21 @@
     
     <div class="container">
       <div class="my-calendar clearfix">
-        <div class="clicked-date">
-          <div class="cal-day"></div>
-          <div class="cal-date"></div>
+        <!-- /////////////// 선택한 날짜 일정 모달 ///////////// -->
+        <div class="cal_modal_background">
+          <div class="clicked-date">
+            <span class="cal_modal_exit">X</span>
+            <div class="cal-day"></div>
+            <div class="cal-date"></div>
+            <div class="cal_modal_event_box"></div>
+          </div>
         </div>
+        
         <div class="calendar-box">
           <div class="ctr-box clearfix">
             <button type="button" title="prev" class="btn-cal prev">
             </button>
-            <button class="cal-todaybtn">today</button>
+            <button class="cal_today_btn">Today</button>
             <span class="cal-month"></span>
             <span class="cal-year"></span>
             <button type="button" title="next" class="btn-cal next">
@@ -108,11 +112,11 @@
         <span class="modal_exit">X</span>
         <div class="modal_form">
           <select name="modal_color" class="modal_color" onchange="select_change(this)">
-            <option value="red" style="background:#d64b4b" selected></option>
-            <option value="orange" style="background:#fdcb6e"></option>
+            <option value="red" style="background:#d64b4b"></option>
+            <option value="orange" style="background:#ff9f43"></option>
             <option value="yellow" style="background: #ffeaa7"></option>
-            <option value="green" style="background:#00b894"></option>
-            <option value="blue" style="background: #0652DD"></option>
+            <option value="green" style="background:#3ed34b"></option>
+            <option value="blue" style="background: #2969e0"></option>
             <option value="purple" style="background: #a29bfe"></option>
             <option value="gray" style="background: #636e72"></option>
           </select>
@@ -120,24 +124,24 @@
             <option value="modal_select_calendar">일정</option>
             <option value="modal_select_look">데일리룩</option>
           </select><br>
-          <input type="text" class="modal_title" placeholder="제목 입력"><br>
-          <input type="date" class="modal_start_time" placeholder="시작 날짜 입력"><br>
-          <input type="date" class="modal_end_time" placeholder="종료 날짜 입력"><br>
-          <input type="text" class="modal_place" placeholder="위치 추가"><br>
-
-          <input type="text" class="modal_outer" placeholder="아우터">
-          <input type="text" class="modal_top" placeholder="상의">
-          <input type="text" class="modal_bot" placeholder="하의">
-          <input type="text" class="modal_shoes" placeholder="신발">
-          <input type="text" class="modal_acc" placeholder="악세서리">
+          <input type="text" class="modal_title modal_text" placeholder="제목 입력" maxlength="45"><br>
+          <input type="date" class="modal_start_time modal_text" placeholder="날짜 입력"><br>
+          <input type="text" class="modal_place modal_text" placeholder="위치 추가" maxlength="45"><br>
+          <p class="modal_num" value="-1" style="display: none;"></p>
+          <input type="text" class="modal_outer modal_text" placeholder="아우터">
+          <input type="text" class="modal_top modal_text" placeholder="상의">
+          <input type="text" class="modal_bot modal_text" placeholder="하의">
+          <input type="text" class="modal_shoes modal_text" placeholder="신발">
+          <input type="text" class="modal_acc modal_text" placeholder="악세서리">
           
-          <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" multiple />
+          <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" value="../files/look_default.png"/>
           <div id="modal_image_container"></div>
 
           <button id="modal_submit">저장</button>
         </div>
       </div>
     </div>
+
   </div>
 </body>
 

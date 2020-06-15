@@ -38,33 +38,27 @@ def event__upload():
         return jsonify(
             "FucKlendar"
         )
-    ID = request.get_json()['id']
+    TITLE = request.get_json()['title']
     COLOR = request.get_json()['color']
-    DATE1 = request.get_json()['date1']
-    DATE2 = request.get_json()['date2']
+    DATE = request.get_json()['date']
     PLACE = request.get_json()['place']
     ## 아무것도 입력 안했을 시 돌려보내기 ##
-    # ID에 입력 안했을 때
-    if ID == "":
+    # TITLE에 입력 안했을 때
+    if TITLE == "":
         return jsonify(
             STATUS = "EMPTY TITLE"
         )
     # 날짜를 입력 안했을 때
-    if DATE1 == "" or DATE2 == "":
+    if DATE == "":
         return jsonify(
             STATUS = "EMPTY DATE"
-        )
-    # 날짜를 이상하게 입력했을 경우
-    if DATE1 > DATE2:
-        return jsonify(
-            STATUS = "Wrong DATE"
         )
     # 장소 입력 안했을 경우 NULL 값 입력
     if PLACE == "":
         PLACE = None
     #디비에 정보 삽입
     event_data = (
-        ID, COLOR, DATE1, DATE2, PLACE, user['user_id']
+        TITLE, COLOR, DATE, PLACE, user['user_id']
     )
     func_result = event_insert(g.db, event_data)
     
@@ -80,7 +74,7 @@ def event__upload():
         STATUS = result
     )
 
-#일정 달력 수정 ##히오니한테 그 날의 날짜를 받는 걸로 일단 함
+#일정 달력 수정 
 @BP.route('/event/modify', methods = ['POST'])
 @jwt_required
 def event__modify():
@@ -89,33 +83,28 @@ def event__modify():
         return jsonify(
             "FucKlendar"
         )
-    ID = request.get_json()['id']
-    DATE1 = request.get_json()['date1']
-    DATE2 = request.get_json()['date2']
+    TITLE = request.get_json()['title']
+    DATE = request.get_json()['date']
     COLOR = request.get_json()['color']
     PLACE = request.get_json()['place']
     NUM = request.get_json()['num']
 
     ## 아무것도 입력 안했을 시 돌려보내기 ##
-    # ID에 입력 안했을 때
-    if ID == "":
+    # TITLE에 입력 안했을 때
+    if TITLE == "":
         return jsonify(
             STATUS = "EMPTY TITLE"
         )
     # 날짜를 입력 안했을 때
-    if DATE1 == "" or DATE2 == "":
+    if DATE == "":
         return jsonify(
             STATUS = "EMPTY DATE"
-        )
-    if DATE1 > DATE2:
-        return jsonify(
-            STATUS = "Wrong DATE"
         )
     # 장소 입력 안했을 경우 NULL 값 입력
     if PLACE == "":
         PLACE = None
     event_new_data = (
-        ID, DATE1, DATE2, COLOR, PLACE, NUM
+        TITLE, DATE, COLOR, PLACE, NUM
     )
     result = event_modify(g.db, event_new_data)
     return jsonify(

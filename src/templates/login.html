@@ -1,35 +1,28 @@
-<!-- <link rel="stylesheet" href="../static/css/login.css" type="text/css"> -->
-
 <body>
     <div class="login">
-        <div class="login-screen">
-            <div class="app-title">
-                <h1>Login</h1>
+        <h1><img src="../static/files/home.png" class="home" >Login Page</h1>
+        <div class="login_form">
+            <div class="login_box">
+                <div>
+                    <input type="text" id="login_id"  placeholder="ID" class="text" autocomplete="off">
+                </div>
+                <div>
+                    <input type="password" id="login_pw" placeholder="PASSWORD" class="text" autocomplete="off">
+                </div>
+                <button id="login_btn" class="btn">LOGIN</button>
+                </br>
+            </br>
+            <div class="atag">
+                <span>No id ? </span>
+                <a href="/signup" class="signup_btn">회원가입</a>
             </div>
-
-            <div class="login-form">
-                <div class="control-group">
-                    <input type="text" id="login_id" class="login-field" value="" placeholder="username"
-                        name="username">
-                    <label class="login-field-icon fui-user" for="login-name"></label>
-                </div>
-
-                <div class="control-group">
-                    <input type="password" id="login_pw" class="login-field" value="" placeholder="password"
-                        name="password">
-                    <label class="login-field-icon fui-lock" for="login-pass"></label>
-                </div>
-
-                <button id="login_btn" value="Log in" class="btn btn-primary btn-large btn-block">Login</button>
-                <br>
-
-                <a href="/signup">회원가입</a>
             </div>
         </div>
     </div>
 
 </body>
 
-
+<link rel="stylesheet" href="../static/css/login.css" type="text/css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="../static/js/login.js"></script>
+

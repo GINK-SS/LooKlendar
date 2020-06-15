@@ -4,48 +4,55 @@
 </header>
 
 <body>
-    <div id="signup_form">
-        <div>회원가입</div>
-        <div>
-            * ID :
-            <input type="text" placeholder="ID 입력" id="signup_id"> 6~20자 한/영/숫자 혼합
+    <div class="signup">
+        <h1><img src="../static/files/home.png" href="/" class="home" width="50px" height="50px">Sign_up Page</h1>
+        <div class="signup_form">
+            <div class="signup_box">
+                <div>
+                    * ID : 6~20자 영어/숫자 혼합
+                    <input type="text" placeholder="아이디 입력" id="signup_id" class="text" autocomplete="off">
+                </div>
+                <div>
+                    * PW : 100자 미만
+                    <input type="password" placeholder="비밀번호 입력" id="signup_pw" class="text" autocomplete="off">
+                </div>
+                <div>
+                    * PW check :
+                    <input type="password" placeholder="비밀번호 확인" id="signup_pw2" class="text" autocomplete="off">
+                </div>
+                <div>
+                    * E-mail : 특수문자 X / ex) look@sejong.com
+                    <input type="text" placeholder="이메일 입력" id="signup_email" class="text" autocomplete="off">
+                </div>
+                <div>
+                    * Name : 특수문자 X / ex) 임세종
+                    <input type="text" placeholder="이름 입력" id="signup_name" class="text" autocomplete="off">
+                </div>
+                <div>
+                    * Nickname :
+                    <input type="text" placeholder="닉네임 입력" id="signup_nickname" class="text" autocomplete="off">
+                </div>
+                <div>
+                    Gender :
+                    <input type="radio" name="gender" value="1" checked>남
+                    <input type="radio" name="gender" value="2">여
+                </div></br>
+                <div>
+                    Birth : 8자리 ex)19970101
+                    <input type="text" placeholder="생년월일 입력" id="signup_birth" maxlength="8" class="text" autocomplete="off"> 
+                </div>
+                <div>
+                    * 프로필 사진 :
+                    <input type="file" class="modal_image" id="signup_photo" accept="image/*"
+                        onchange="image_load(event);" value="../files/user_image1.jpg"/>          
+                    <div id="modal_image_container"></div>
+                </div></br>
+                <button id="signup_button" class="signup_btn">회원가입</button>
+            </div>
         </div>
-        <div>
-            * PW :
-            <input type="text" placeholder="PW 입력" id="signup_pw"> 100자 미만
-        </div>
-        <div>
-            * PW check :
-            <input type="text" placeholder="비밀번호 확인" id="signup_pw2">
-        </div>
-        <div>
-            * E-mail :
-            <input type="text" placeholder="이메일 입력" id="signup_email"> 특수문자 X
-        </div>
-        <div>
-            * Name :
-            <input type="text" placeholder="이름 입력" id="signup_name"> 특수문자 X
-        </div>
-        <div>
-            * Nickname :
-            <input type="text" placeholder="닉네임 입력" id="signup_nickname">
-        </div>
-        <div>
-            Gender :
-            <input type="radio" name="gender" value="1" checked>남
-            <input type="radio" name="gender" value="2">여
-        </div>
-        <div>
-            Birth :
-            <input type="text" placeholder="생년월일 입력" id="signup_birth" maxlength="8"> 8자리 ex)19970101
-        </div>
-        <div>
-            Photo :
-            <input type="text" placeholder="사진 입력" id="signup_photo">
-        </div>
-        <button id="signup_button">회원가입</button>
     </div>
 </body>
 
+<link rel="stylesheet" type="text/css" href="../static/css/signup.css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="../static/js/signup.js"></script>

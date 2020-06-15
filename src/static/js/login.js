@@ -26,7 +26,7 @@ function login_FetchAPI_v1() {
         console.log(res);
         if(res['STATUS']=="SUCCESS"){        
             sessionStorage.setItem('access_token', "Bearer "+res['access_token']);
-            window.location.href="http://localhost:5000/";
+            window.location.href="/";
         }
         else if(res['STATUS'] == "INCORRECT ID"){
             alert("존재하지 않는 ID입니다.");
@@ -36,3 +36,7 @@ function login_FetchAPI_v1() {
         }
     })
 }
+
+document.querySelector(".home").addEventListener("click",function(){
+    window.location.href="/";
+})
