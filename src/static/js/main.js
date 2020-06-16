@@ -69,17 +69,24 @@ document.querySelector("#logout").addEventListener('click', function () {
 function calendar_mode() {
     // checked true -> look 상태
     if (document.querySelector(".checkbox").checked) {
-        loadYYMM(init.today);
-        init.monForChange = init.today.getMonth();
+        document.querySelector("#m_s_c").disabled = true;
+        document.querySelector("#m_s_l").disabled = false;
+        
+        var split_date = document.querySelector(".day").attributes[2].nodeValue.split("-");
+        var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
+        loadYYMM(new Date(start_date));
+
         var main_days = document.querySelectorAll(".day");
         for(day of main_days){
-            
             day.style.background= "rgba(0, 0, 0, 0.1)";
         }
     }
     else{
-        loadYYMM(init.today);
-        init.monForChange = init.today.getMonth();
+        document.querySelector("#m_s_c").disabled = false;
+        document.querySelector("#m_s_l").disabled = true;
+        var split_date = document.querySelector(".day").attributes[2].nodeValue.split("-");
+        var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
+        loadYYMM(new Date(start_date));
     }
 }
 

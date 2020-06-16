@@ -46,6 +46,8 @@ def init_db():
         cursor.execute(sql)
         sql = open("database/table/v_Looklendar_look.sql").read()
         cursor.execute(sql)
+        sql = open("database/table/Looklendar_like.sql").read()
+        cursor.execute(sql)
         
     db.commit()
     db.close()

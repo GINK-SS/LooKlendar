@@ -32,7 +32,11 @@ def auth__sign_up():
     NICK = request.form['nick']
     BIRTH = request.form['birth']
     GENDER = request.form['gender']
-    files = request.files['file']
+    try:
+        files = request.files['file']
+    except:
+        files = None
+        
     #ok# 아이디가 너무 길면 돌려보낸다
     if len(ID) > 20:
         return jsonify(
@@ -175,7 +179,7 @@ def auth__sign_up():
         if func_result == "success":
             if PHOTO != "user_image1.jpg":
                 files.save('.' + UPLOAD_PATH + file_check['original'])        
-    # 수정필요 근데 여기로 절대 안들어감 # 사진 첨부 안했다면 NULL 입력
+    # 수정필요# 사진 첨부 안했다면 NULL 입력
     else:
         PHOTO = "user_image1.jpg"
         user_data = (
@@ -241,8 +245,12 @@ def auth__modify():
     EMAIL = request.form['email']
     BIRTH = request.form['birth']
     GENDER = request.form['gender']
-    files = request.files['file']
-    
+    REMOVE = request.form['remove']
+    try:
+        files = request.files['file']
+    except:
+        files = None
+
     # 닉네임 중복확인 (대소문자 구별 X, 본인의 기존 닉네임 제외)
     nick_result = user_nick_check2(g.db, NICK, user['user_id'])
     if nick_result == "exist":
@@ -308,18 +316,23 @@ def auth__modify():
         )
         result = user_modify(g.db, user_new_data)
         if result == "SUCCESS":
-            if PHOTO != "user_image1.jpg":
-                files.save('.' + UPLOAD_PATH + file_check['original'])
+            files.save('.' + UPLOAD_PATH + file_check['original'])
             return jsonify(
                 STATUS = "SUCCESS"
             )
     #ok# 사진 첨부 안했다면 NULL 입력
     else:
-        PHOTO = "user_image1.jpg"
-        user_new_data = (
-            EMAIL, NICK, BIRTH, GENDER, PHOTO, user['user_id']
+        if REMOVE == "1":
+            PHOTO = "user_image1.jpg"
+            user_new_data = (
+                EMAIL, NICK, BIRTH, GENDER, PHOTO, user['user_id']
+            )
+            result = user_modify(g.db, user_new_data)
+        else:
+            user_new_data = (
+            EMAIL, NICK, BIRTH, GENDER, user['user_id']
         )
-        result = user_modify(g.db, user_new_data)
+            result = user_modify2(g.db, user_new_data)
         if result == "SUCCESS":
             return jsonify(
                 STATUS = "SUCCESS"

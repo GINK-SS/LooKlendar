@@ -11,7 +11,7 @@ from flask_cors import CORS
 from db_init import *
 #app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 #APPS
-import auth, look, event
+import auth, look, event, board
 
 app = Flask(__name__, instance_relative_config=True)
 CORS(app)
@@ -29,6 +29,7 @@ def main_app(test_config = None):
 	app.register_blueprint(auth.BP)
 	app.register_blueprint(look.BP)
 	app.register_blueprint(event.BP)
+	app.register_blueprint(board.BP)
 
 ### REQUEST 오기 직전
 @app.before_request
@@ -64,6 +65,10 @@ def developer():
 @app.route("/mypage")
 def mypage():
     return render_template('mypage.html')
+
+@app.route("/write")
+def write():
+    return render_template('write.html')
 
 ### 실행
 if __name__ == '__main__':

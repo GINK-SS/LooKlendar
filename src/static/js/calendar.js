@@ -97,8 +97,13 @@ function loadYYMM(fullDate) {
         trtd += '</tr>';
     }
     $calBody.innerHTML = trtd;
-    if(document.querySelector(".checkbox").checked == false) get_calendar_FetchAPI();
-    else get_look_FetchAPI();
+    if (document.querySelector(".checkbox").checked == false) {
+        get_calendar_FetchAPI();
+        document.querySelector("#modal_select").value = "modal_select_calendar";
+    } else {
+        get_look_FetchAPI();
+        document.querySelector("#modal_select").value = "modal_select_look";
+    }
     modal_plus_calendar();
     //////////////////////// plus button 플러스 버튼 호버링 /////////////////////
     var date_all2 = document.querySelectorAll(".day");
@@ -109,8 +114,11 @@ function loadYYMM(fullDate) {
         item.addEventListener('mouseleave', function () {
             item.childNodes[item.childNodes.length - 1].style.display = "none";
         })
+        if(document.querySelector(".checkbox").checked){
+            item.style.background = "rgba(0, 0, 0, 0.1)"
+        }
     }
-
+    
 }
 
 /**
@@ -151,6 +159,7 @@ document.querySelector("#logout").addEventListener("click", function () {
 $btnNext.addEventListener('click', () => loadYYMM(init.nextMonth()));
 $btnPrev.addEventListener('click', () => loadYYMM(init.prevMonth()));
 
+// 날짜 눌렀을 때
 $calBody.addEventListener('click', (e) => {
     if (e.target.classList.contains('day')) {
         if (init.activeDTag) {
@@ -162,44 +171,156 @@ $calBody.addEventListener('click', (e) => {
         init.activeDTag = e.target;
         init.activeDate.setDate(day);
         document.querySelector(".cal_modal_background").style.display = "block";
-        get_calendar_modal_FetchAPI(e.target);
 
-        // ------------------ 캘린더 일정 수정 --------------------- //
-        setTimeout(() => {
-            modal_events = document.querySelectorAll(".cal_modal_event");
-            for (var event of modal_events) {
-                event.childNodes[3].addEventListener("click", function (ee) {
-                    var e = ee.path[1];
-                    document.querySelector(".modal_background").style.display = "block";
-                    document.querySelector(".modal_title").value = e.childNodes[0].attributes[0].nodeValue;
-                    document.querySelector(".modal_num").value = e.childNodes[0].attributes[2].nodeValue;
-                    var ecolor = e.childNodes[0].attributes[1].nodeValue;
-                    var mcolor = document.querySelector(".modal_color");
-                    mcolor.value = e.childNodes[0].attributes[1].nodeValue;
-                    if (ecolor == "#d64b4b") mcolor.value = "red";
-                    else if (ecolor == "#ff9f43") mcolor.value = "orange";
-                    else if (ecolor == "#ffeaa7") mcolor.value = "yellow";
-                    else if (ecolor == "#3ed34b") mcolor.value = "green";
-                    else if (ecolor == "#2969e0") mcolor.value = "blue";
-                    else if (ecolor == "#a29bfe") mcolor.value = "purple";
-                    else if (ecolor == "#636e72") mcolor.value = "gray";
-                    document.querySelector(".modal_color").style.background = ecolor;
-                    document.querySelector(".modal_start_time").value = e.childNodes[1].attributes[0].nodeValue;
-                    document.querySelector(".modal_place").value = e.childNodes[2].attributes[0].nodeValue;
-                    var modal_select = document.querySelector("#modal_select");
-                    modal_select.value = "modal_select_calendar";
-                    modal_change(modal_select);
-                    cal_modal_clean();
-                })
-            }
-        }, 200);
+        modal_image_clean();
+        document.querySelector(".modal_image").value = '';
 
+        if (document.querySelector(".checkbox").checked == false) {
+            get_calendar_modal_FetchAPI(e.target);
+            // ------------------ 캘린더 일정 수정 및 삭제 --------------------- //
+            setTimeout(() => {
+                modal_events = document.querySelectorAll(".cal_modal_event");
+                for (var event of modal_events) {
+                    event.childNodes[4].addEventListener("click", function (ee) {
+                        var e = ee.path[1];
+                        document.querySelector(".modal_background").style.display = "block";
+                        document.querySelector(".modal_title").value = e.childNodes[0].attributes[0].nodeValue;
+                        document.querySelector(".modal_num").value = e.childNodes[0].attributes[2].nodeValue;
+                        var ecolor = e.childNodes[0].attributes[1].nodeValue;
+                        var mcolor = document.querySelector(".modal_color");
+                        mcolor.value = e.childNodes[0].attributes[1].nodeValue;
+                        if (ecolor == "#d64b4b") mcolor.value = "red";
+                        else if (ecolor == "#ff9f43") mcolor.value = "orange";
+                        else if (ecolor == "#ffeaa7") mcolor.value = "yellow";
+                        else if (ecolor == "#3ed34b") mcolor.value = "green";
+                        else if (ecolor == "#2969e0") mcolor.value = "blue";
+                        else if (ecolor == "#a29bfe") mcolor.value = "purple";
+                        else if (ecolor == "#636e72") mcolor.value = "gray";
+                        document.querySelector(".modal_color").style.background = ecolor;
+                        document.querySelector(".modal_start_time").value = e.childNodes[1].attributes[0].nodeValue;
+                        document.querySelector(".modal_place").value = e.childNodes[2].attributes[0].nodeValue;
+                        var modal_select = document.querySelector("#modal_select");
+                        modal_select.value = "modal_select_calendar";
+                        modal_change(modal_select);
+                        cal_modal_clean();
+                    })
+
+                    // ------------------ 일정 삭제 ------------------ //
+                    event.childNodes[5].addEventListener("click", function () {
+                        if (sessionStorage.length == 0) return;
+                        else if (sessionStorage.length == 1)
+                            if (sessionStorage.getItem("access_token") == 0) return;
+
+                        const token = sessionStorage.getItem('access_token');
+                        num = event.childNodes[0].attributes[2].nodeValue;
+                        var send_data = {
+                            'num' : num
+                        }
+                        
+                        fetch('/event/delete', {
+                            method: "POST",
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': token,
+                            },
+                            body: JSON.stringify(send_data)
+                        })
+                        .then(res => res.json())
+                        .then((res) => {
+                            console.log("일정 삭제 완료!");
+                            var split_date = event.childNodes[1].attributes[0].nodeValue.split("-");
+                            var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
+                            loadYYMM(new Date(start_date));
+                            document.querySelector(".modal_background").style.display = "none";
+                        })
+                    })
+                    
+                }
+            }, 500);
+        } else {
+            get_look_modal_FetchAPI(e.target);
+            // ------------------- 캘린더 데일리룩 수정 ---------------- //
+            setTimeout(() => {
+                modal_events = document.querySelectorAll(".cal_modal_event");
+                for (var event of modal_events) {
+                    event.childNodes[9].addEventListener("click", function (ee) {
+                        var e = ee.path[1];
+                        document.querySelector(".modal_background").style.display = "block";
+                        document.querySelector(".modal_title").value = e.childNodes[0].attributes[0].nodeValue;
+                        var ecolor = e.childNodes[0].attributes[1].nodeValue;
+                        var mcolor = document.querySelector(".modal_color");
+                        mcolor.value = e.childNodes[0].attributes[1].nodeValue;
+                        if (ecolor == "#d64b4b") mcolor.value = "red";
+                        else if (ecolor == "#ff9f43") mcolor.value = "orange";
+                        else if (ecolor == "#ffeaa7") mcolor.value = "yellow";
+                        else if (ecolor == "#3ed34b") mcolor.value = "green";
+                        else if (ecolor == "#2969e0") mcolor.value = "blue";
+                        else if (ecolor == "#a29bfe") mcolor.value = "purple";
+                        else if (ecolor == "#636e72") mcolor.value = "gray";
+                        document.querySelector(".modal_color").style.background = ecolor;
+                        document.querySelector(".modal_num").value = e.childNodes[0].attributes[2].nodeValue;
+                        document.querySelector(".modal_start_time").value = e.childNodes[1].attributes[0].nodeValue;
+                        document.querySelector(".modal_place").value = e.childNodes[2].attributes[0].nodeValue;
+                        document.querySelector(".modal_outer").value = e.childNodes[3].attributes[0].nodeValue;
+                        document.querySelector(".modal_top").value = e.childNodes[4].attributes[0].nodeValue;
+                        document.querySelector(".modal_bot").value = e.childNodes[5].attributes[0].nodeValue;
+                        document.querySelector(".modal_shoes").value = e.childNodes[6].attributes[0].nodeValue;
+                        document.querySelector(".modal_acc").value = e.childNodes[7].attributes[0].nodeValue;
+                        var modal_select = document.querySelector("#modal_select");
+                        modal_select.value = "modal_select_look";
+
+                        var img = document.querySelector("#event_image").attributes[0].nodeValue.split("/")[3]
+                        document.querySelector(".modal_image").setAttribute("value", "../static/files/" + img);
+
+                        modal_change(modal_select);
+                        cal_modal_clean();
+                    })
+                    event.lastChild.addEventListener("click", function () {
+                        if (sessionStorage.length == 0) return;
+                        else if (sessionStorage.length == 1)
+                            if (sessionStorage.getItem("access_token") == 0) return;
+
+                        const token = sessionStorage.getItem('access_token');
+                        num = event.childNodes[0].attributes[2].nodeValue;
+                        var send_data = {
+                            'num' : num
+                        }
+                        
+                        fetch('/look/delete', {
+                            method: "POST",
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': token,
+                            },
+                            body: JSON.stringify(send_data)
+                        })
+                        .then(res => res.json())
+                        .then((res) => {
+                            console.log("일정 삭제 완료!");
+                            var split_date = event.childNodes[1].attributes[0].nodeValue.split("-");
+                            var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
+                            loadYYMM(new Date(start_date));
+                            document.querySelector(".modal_background").style.display = "none";
+                        })
+                    })
+                }
+            }, 500);
+        }
     }
 });
 
 function cal_modal_clean() {
     document.querySelector(".cal_modal_background").style.display = "none";
     var event_box = document.querySelector(".cal_modal_event_box");
+    while (event_box.hasChildNodes()) {
+        event_box.removeChild(event_box.firstChild);
+    }
+}
+
+function modal_image_clean() {
+    var event_box = document.querySelector("#modal_image_container");
     while (event_box.hasChildNodes()) {
         event_box.removeChild(event_box.firstChild);
     }
@@ -250,7 +371,7 @@ function get_calendar_FetchAPI() {
 }
 
 // -------------------- 데일리룩 불러오기 ------------------- //
-function get_look_FetchAPI(){
+function get_look_FetchAPI() {
     // 토큰값이 0이거나 없을때 fetch 실행x
     if (sessionStorage.length == 0) return;
     else if (sessionStorage.length == 1)
@@ -267,15 +388,14 @@ function get_look_FetchAPI(){
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
             var all_day = document.querySelectorAll(".day");
             for (event of res["RESULT"]) {
                 let append_calendar = document.createElement('div');
                 append_calendar.appendChild(document.createTextNode(event['event_title']));
-                
+
                 const image = new Image();
                 //image객체가 생성되어 속성들을 추가할수 있음
-                image.src = '../files/' + event.imagename;
+                image.src = '../static/files/' + event['look_s_photo'];
                 append_calendar.appendChild(image);
 
                 append_calendar.classList.add("cal_calendar");
@@ -331,43 +451,108 @@ function get_calendar_modal_FetchAPI(e) {
                     append_calendar_modal += '">장소 : ';
                     append_calendar_modal += event['event_place'];
                     append_calendar_modal += '</div>'
-                    
-                    // if(event['event_select'] == "modal_select_look"){
-                    //     append_calendar_modal += '<div outer="'
-                    //     append_calendar_modal += event['event_outer'];
-                    //     append_calendar_modal += '">아우터 : ';
-                    //     append_calendar_modal += event['event_outer'];
-                    //     append_calendar_modal += '</div>'
-                    //     append_calendar_modal += '<div top="'
-                    //     append_calendar_modal += event['event_top'];
-                    //     append_calendar_modal += '">상의 : ';
-                    //     append_calendar_modal += event['event_top'];
-                    //     append_calendar_modal += '</div>'
-                    //     append_calendar_modal += '<div bot="'
-                    //     append_calendar_modal += event['event_bot'];
-                    //     append_calendar_modal += '">하의 : ';
-                    //     append_calendar_modal += event['event_bot'];
-                    //     append_calendar_modal += '</div>'
-                    //     append_calendar_modal += '<div shoes="'
-                    //     append_calendar_modal += event['event_shoes'];
-                    //     append_calendar_modal += '">신발 : ';
-                    //     append_calendar_modal += event['event_shoes'];
-                    //     append_calendar_modal += '</div>'
-                    //     append_calendar_modal += '<div acc="'
-                    //     append_calendar_modal += event['event_acc'];
-                    //     append_calendar_modal += '">악세서리 : ';
-                    //     append_calendar_modal += event['event_acc'];
-                    //     append_calendar_modal += '</div>'
-                    //     append_calendar_modal += '<img src="../static/file/look_default.png" id="event_image">'
-                    // }
 
-                    append_calendar_modal += '<img src="../static/image/cal_pen.png" width="50px" height="50px">'
+                    if (event['look_num'] != null) {
+                        append_calendar_modal += '<div look_num="';
+                        append_calendar_modal += event['look_num'];
+                        append_calendar_modal += '">타입 : 데일리룩';
+                        append_calendar_modal += '</div>';
+                    } else {
+                        append_calendar_modal += '<div look_num="';
+                        append_calendar_modal += event['look_num'];
+                        append_calendar_modal += '">타입 : 일정';
+                        append_calendar_modal += '</div>';
+                    }
+
+                    append_calendar_modal += '<img src="../static/files/cal_pen.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/files/trash2.png" width="50px" height="50px">'
                     append_node.innerHTML = append_calendar_modal;
                     append_node.classList.add("cal_modal_event");
                     append_node.style.background = event['event_color'];
-                    
-                    // document.querySelector("#event_image").src = "../static/files/"+ res['event_image'];
-                    
+
+                    document.querySelector(".cal_modal_event_box").appendChild(append_node);
+                }
+            }
+        })
+}
+
+function get_look_modal_FetchAPI(e) {
+    // 토큰값이 0이거나 없을때 fetch 실행x
+    if (sessionStorage.length == 0) return;
+    else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+
+    const token = sessionStorage.getItem('access_token');
+    fetch('/look/main', {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': token,
+            }
+        })
+        .then(res => res.json())
+        .then((res) => {
+            for (event of res["RESULT"]) {
+                if (e.attributes[2].nodeValue == event['event_date']) {
+                    let append_node = document.createElement("div");
+                    let append_calendar_modal = '';
+                    append_calendar_modal += '<div title="'
+                    append_calendar_modal += event['event_title'];
+                    append_calendar_modal += '" ecolor="'
+                    append_calendar_modal += event['event_color'];
+                    append_calendar_modal += '" num="';
+                    append_calendar_modal += event['event_num'];
+                    append_calendar_modal += '">제목 : '
+                    append_calendar_modal += event['event_title'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div date="'
+                    append_calendar_modal += event['event_date'];
+                    append_calendar_modal += '">'
+                    append_calendar_modal += event['event_date'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div place="'
+                    append_calendar_modal += event['event_place'];
+                    append_calendar_modal += '">장소 : ';
+                    append_calendar_modal += event['event_place'];
+                    append_calendar_modal += '</div>'
+
+                    append_calendar_modal += '<div outer="'
+                    append_calendar_modal += event['look_outer'];
+                    append_calendar_modal += '">아우터 : ';
+                    append_calendar_modal += event['look_outer'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div top="'
+                    append_calendar_modal += event['look_top'];
+                    append_calendar_modal += '">상의 : ';
+                    append_calendar_modal += event['look_top'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div bot="'
+                    append_calendar_modal += event['look_bot'];
+                    append_calendar_modal += '">하의 : ';
+                    append_calendar_modal += event['look_bot'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div shoes="'
+                    append_calendar_modal += event['look_shoes'];
+                    append_calendar_modal += '">신발 : ';
+                    append_calendar_modal += event['look_shoes'];
+                    append_calendar_modal += '</div>'
+                    append_calendar_modal += '<div acc="'
+                    append_calendar_modal += event['look_acc'];
+                    append_calendar_modal += '">악세서리 : ';
+                    append_calendar_modal += event['look_acc'];
+                    append_calendar_modal += '</div>';
+                    append_calendar_modal += '<img src="../static/files/';
+                    append_calendar_modal += event['look_s_photo'];
+                    append_calendar_modal += '" id="event_image" file="';
+                    append_calendar_modal += event['look_s_photo'];
+                    append_calendar_modal += '">';
+                    append_calendar_modal += '<img src="../static/files/cal_pen.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/files/trash2.png" width="50px" height="50px">'
+                    append_node.innerHTML = append_calendar_modal;
+                    append_node.classList.add("cal_modal_event");
+                    append_node.style.background = event['event_color'];
+
                     document.querySelector(".cal_modal_event_box").appendChild(append_node);
                 }
             }
@@ -403,13 +588,13 @@ function calendar_FetchAPI_v1() {
     var start_time = document.querySelector(".modal_start_time").value;
     var num = document.querySelector(".modal_num").value;
     var modal_select = document.querySelector("#modal_select").value;
-    
+
     var outer = document.querySelector(".modal_outer").value;
     var top = document.querySelector(".modal_top").value;
     var bot = document.querySelector(".modal_bot").value;
     var shoes = document.querySelector(".modal_shoes").value;
     var acc = document.querySelector(".modal_acc").value;
-    
+
     // ------ 캘린더 일정 ------ //
     if (modal_select == "modal_select_calendar") {
         if (num == "-1") {
@@ -465,16 +650,11 @@ function calendar_FetchAPI_v1() {
                     document.querySelector(".modal_background").style.display = "none";
                 })
         }
-    // ------- 캘린더 데일리룩 ------- //
+        // ------- 캘린더 데일리룩 ------- //
     } else if (modal_select == "modal_select_look") {
 
-        if(document.querySelector(".modal_image").files.length == 0){
-            file = new File(["look_default"],"look_default.png", {type : "image/png"});
-        }
-        else file = document.querySelector(".modal_image").files[0];
-        
         var send_data = new FormData();
-        
+
         send_data.append('color', mcolor);
         send_data.append('title', title);
         send_data.append('place', place);
@@ -484,10 +664,14 @@ function calendar_FetchAPI_v1() {
         send_data.append('bot', bot);
         send_data.append('shoes', shoes);
         send_data.append('acc', acc);
-        send_data.append('file', file);
 
         // ------- 데일리룩 등록 ------- //
         if (num == "-1") {
+            var file;
+            if (document.querySelector(".modal_image").files.length == 0) file = '';
+            else file = document.querySelector(".modal_image").files[0];
+
+            send_data.append('file', file);
 
             fetch('/look/upload', {
                     method: "POST",
@@ -501,7 +685,7 @@ function calendar_FetchAPI_v1() {
                 .then(res => res.json())
                 .then((res) => {
                     console.log("데일리룩 삽입 완료!");
-                    var split_date = send_data['date'].split("-");
+                    var split_date = start_time.split("-");
                     var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
                     loadYYMM(new Date(start_date));
                     document.querySelector(".modal_background").style.display = "none";
@@ -509,28 +693,33 @@ function calendar_FetchAPI_v1() {
         }
         // ---------- 데일리룩 수정 --------- //
         else {
-            send_data.append('num',num);
+
+            var file;
+            if (document.querySelector(".modal_image").files.length == 0) file = '';
+            else file = document.querySelector(".modal_image").files[0];
+
+            send_data.append('file', file);
+            send_data.append('num', num);
 
             fetch('/look/modify', {
-                method: "POST",
-                headers: {
-                    // 'Accept': 'application/json',
-                    // 'Content-Type': 'application/json',
-                    'Authorization': token
-                },
-                body: send_data
+                    method: "POST",
+                    headers: {
+                        // 'Accept': 'application/json',
+                        // 'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: send_data
                 })
                 .then(res => res.json())
                 .then((res) => {
                     console.log("데일리룩 수정 완료!");
-                    var split_date = send_data['date'].split("-");
+                    var split_date = start_time.split("-");
                     var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
                     loadYYMM(new Date(start_date));
                     document.querySelector(".modal_background").style.display = "none";
                 })
         }
     }
-
 }
 
 ///---------------  일정 입력 모달 창 --------------///
@@ -552,7 +741,11 @@ function modal_plus_calendar() {
                 }
             }
             var modal_select = document.querySelector("#modal_select");
-            modal_select.value = "modal_select_calendar";
+            if (document.querySelector(".checkbox").checked == false) {
+                modal_select.value = "modal_select_calendar";
+            } else {
+                modal_select.value = "modal_select_look";
+            }
             modal_change(modal_select);
             document.querySelector(".modal_num").value = '-1';
             // 날짜 입력란에 현재 날짜 기본 세팅하기

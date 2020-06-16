@@ -187,6 +187,11 @@ body {
     padding:5px;
     box-shadow: gray;
 }
+.cal_calendar img{
+    position: relative;    
+    width: 100%;
+    padding: 3%;
+}
 
 /* -------------- 클릭한 날짜 모달 css ---------------- */
 .cal_modal_background{
@@ -246,15 +251,21 @@ body {
 /* ------------ 모달창에 있는 일정들 css ---------- */
 .cal_modal_event{
     border-radius: 8px;
-    font-size: 1.3em;
+    font-size: 1.1em;
     color: black;
     font-weight: 600;
-    cursor: pointer;
     margin:6px;
     padding:5px;
     box-shadow: gray;
 }
+.cal_modal_event img{
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+}
 .cal_modal_event img:hover{
     background: #74b9ff;
-    border-radius: 5px;
+}
+#event_image{
+    width: 100px;
 }

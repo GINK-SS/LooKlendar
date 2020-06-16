@@ -15,11 +15,9 @@ function signup_FetchAPI_v1(){
     var birth = document.querySelector("#signup_birth").value;
     var gender = $("input[type=radio][name=gender]:checked").val();
     
-    if(document.querySelector("#signup_photo").files.length == 0){
-        file = new File(["user_image1"],"user_image1.jpg", {type : "image/jpeg"});
-    }
-    else file = document.querySelector("#signup_photo").files[0];
-    console.log(file);
+    var file;
+    if (document.querySelector(".modal_image").files.length == 0) file = '';
+    else file = document.querySelector(".modal_image").files[0];
     
     var send_data = new FormData();
     

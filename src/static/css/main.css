@@ -51,7 +51,6 @@ body {
 }
 .success_login{
     display: none;
-    float: left;
     clear: both;
 }
 .success_login img{

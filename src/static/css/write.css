@@ -1,0 +1,89 @@
+.signup {
+    padding: 1em 0 1em;
+    background: beige;
+}
+
+h1 {
+    text-align: center;
+    color: darkslategrey;
+    letter-spacing: 2px;
+}
+
+.signup_form {
+    width: 50%;
+    margin: 2em auto;
+    background: rgba(0, 0, 0, 0.18);
+    background-size: cover;
+}
+
+.signup_box {
+    padding: 2em;
+    color: darkslategrey;
+    transition: all .3s;
+    font-weight: bold;
+}
+
+.text {
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    width: 94.5%;
+    display: block;
+    border: none;
+    padding: 0.7em;
+    margin: 0.7em;
+    border: solid 1px rgba(255, 255, 255, 0.37);
+    font-family: 'Roboto', sans-serif;
+}
+
+.text2{
+    height: 20%;
+}
+
+input {
+    -webkit-transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+    transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 96%, #fff 4%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #fff 4%);
+    background-position: -800px 0;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+input:focus {
+    box-shadow: none;
+    outline: none;
+    background-position: 0 0;
+    font-weight: 600;
+}
+
+.signup_btn {
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: darkslategrey;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 1em 0;
+    letter-spacing: 4px;
+}
+
+.signup_btn:hover {
+    -webkit-transition: .5s all;
+    -moz-transition: .5s all;
+    -o-transition: .5s all;
+    -ms-transition: .5s all;
+    transition: .5s all;
+    background: rgb(64, 100, 69);
+}
+
+.home{
+    cursor: pointer;
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.5em;
+}

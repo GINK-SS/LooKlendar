@@ -174,6 +174,15 @@ def user_modify(db, user_new_data):
 
     return "SUCCESS"
 
+#ok# 유저 정보 변경(사진은 그대로 유지)
+def user_modify2(db, user_new_data):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_user SET user_email = %s, user_nickname = %s, user_birth = %s, user_gender = %s WHERE user_id = %s;"
+        cursor.execute(query, user_new_data)
+    db.commit()
+
+    return "SUCCESS"
+
 # 유저 정보 삭제 (회원탈퇴)
 def user_out(db, user_id):
     with db.cursor() as cursor:
@@ -189,7 +198,7 @@ def look_insert(db, look_data, look_data2):
         query = "INSERT INTO Looklendar_calendar(event_title, event_color, user_id, event_date, event_place) VALUES(%s, %s, %s, %s, %s);"
         cursor.execute(query, look_data)
         db.commit()
-        query = "INSERT INTO Looklendar_look(look_num, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc) VALUES((SELECT event_num FROM Looklendar_calendar WHERE user_id = %s AND event_date = %s), %s, %s, %s, %s, %s, %s, %s);"
+        query = "INSERT INTO Looklendar_look(look_num, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc) VALUES((SELECT event_num FROM Looklendar_calendar WHERE user_id = %s AND event_date = %s ORDER BY event_num DESC LIMIT 1), %s, %s, %s, %s, %s, %s, %s);"
         cursor.execute(query, look_data2)
     db.commit()
 
@@ -201,9 +210,12 @@ def look_select(db, user_id):
         query = "SELECT event_num, event_title, event_color, user_id, CONCAT(year(event_date), '-', IF(LENGTH(month(event_date))<>2, CONCAT('0', month(event_date)), month(event_date)), '-', IF(LENGTH(day(event_date))<>2, CONCAT('0', day(event_date)), day(event_date))) AS event_date, event_place, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc FROM v_Looklendar_look WHERE user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
-        pprint(result)
     return result
 
+# 데일리 달력 사진 확인
+def event_select_p(db, PHOTO):
+    with db.cursor() as cursor:
+        query = "SELECT event_num, event_title, event_color, user_id, look_photo, look_s_photo, look_outer, look_top, look_bot, look_shoes, look_acc FROM v_Looklendar_look WHERE user_id = %s;"
 #ok# 데일리 달력 변경 
 def look_modify(db, look_new_data, look_new_data2):
     with db.cursor() as cursor:
@@ -214,6 +226,18 @@ def look_modify(db, look_new_data, look_new_data2):
     db.commit()
 
     return "SUCCESS"
+
+#ok# 데일리 달력 변경 
+def look_modify2(db, look_new_data, look_new_data2):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_calendar SET event_title = %s, event_color = %s, event_date = %s, event_place = %s WHERE event_num = %s;"
+        cursor.execute(query, look_new_data)
+        query = "UPDATE Looklendar_look SET look_outer = %s, look_top = %s, look_bot = %s, look_shoes = %s, look_acc = %s WHERE look_num = %s;"
+        cursor.execute(query, look_new_data2)
+    db.commit()
+
+    return "SUCCESS"
+
 
 #ok# 데일리 달력 삭제 
 def look_delete(db, event_num):
@@ -228,7 +252,7 @@ def look_delete(db, event_num):
 def event_select(db, user_id):
     with db.cursor() as cursor:
         # 희원이한테 날짜를 문자열로 줘야하는데 아니면은 이상하게 나와서 처음엔 간단한 %Y 이런식으로 했는데 이게 파이썬에서 뭘 받는 걸로 인식을 해서 년도, 월, 일 따로 받았는데 따로 떨어져 있어서 CONCAT으로 묶었지만 한자리면은 한자리 수만 나와서 그 앞에 IF문을 사용해서 한자리면 앞에 0을 붙이게 출력하도록 함
-        query = "SELECT event_num, event_title, event_color, user_id, CONCAT(year(event_date), '-', IF(LENGTH(month(event_date))<>2, CONCAT('0', month(event_date)), month(event_date)), '-', IF(LENGTH(day(event_date))<>2, CONCAT('0', day(event_date)), day(event_date))) AS event_date, event_place FROM Looklendar_calendar WHERE user_id = %s;"
+        query = "SELECT cal.event_num, cal.event_title, cal.event_color, cal.user_id, CONCAT(year(cal.event_date), '-', IF(LENGTH(month(cal.event_date))<>2, CONCAT('0', month(cal.event_date)), month(cal.event_date)), '-', IF(LENGTH(day(cal.event_date))<>2, CONCAT('0', day(cal.event_date)), day(cal.event_date))) AS event_date, cal.event_place, lo.look_num FROM Looklendar_calendar AS cal LEFT JOIN Looklendar_look AS lo ON cal.event_num = lo.look_num WHERE cal.user_id = %s;"
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()
 
@@ -261,6 +285,152 @@ def event_delete(db, event_num):
 
     return "success"
 
+# 커뮤니티 전체 글 반환
+def boards_select(db, page):
+    with db.cursor() as cursor:
+        query = "SELECT DL.dailylook_num, DL.dailylook_title, IF(U.user_id is NULL, '탈퇴 유저', U.user_nickname) AS NICK, DL.dailylook_text, DL.dailylook_date, DL.dailylook_outer, DL.dailylook_top, DL.dailylook_bot, DL.dailylook_shoes, DL.dailylook_acc, DL.dailylook_view, DL.dailylook_photo,  (SELECT COUNT(DL.dailylook_num) FROM Looklendar_dailylook AS DL JOIN Looklendar_like AS Li ON DL.dailylook_num = Li.dailylook_num) AS LIKEE FROM Looklendar_dailylook AS DL JOIN Looklendar_user AS U ON DL.user_id = U.user_id ORDER BY DL.dailylook_date DESC LIMIT %s, 12;"
+        cursor.execute(query, page*12-12,)
+        result = cursor.fetchall()
+    return result
+
+# 커뮤니티 단일 글 반환
+def board_select(db, dailylook_num):
+    with db.cursor() as cursor:
+        query = "SELECT DL.dailylook_num, DL.dailylook_title, IF(U.user_id is NULL, '탈퇴 유저', U.user_nickname) AS NICK, DL.dailylook_text, DL.dailylook_date, DL.dailylook_outer, DL.dailylook_top, DL.dailylook_bot, DL.dailylook_shoes, DL.dailylook_acc, DL.dailylook_view, DL.dailylook_photo, (SELECT COUNT(DL.dailylook_num) FROM Looklendar_dailylook AS DL JOIN Looklendar_like AS Li ON DL.dailylook_num = Li.dailylook_num) AS LIKEE FROM Looklendar_dailylook AS DL JOIN Looklendar_user AS U ON DL.user_id = U.user_id WHERE DL.dailylook_num = %s;"
+        cursor.execute(query, (dailylook_num,))
+        result = cursor.fetchone()
+
+    return result
+
+# 커뮤니티 글의 주인인지 확인
+def board_apply(db, dailylook_num, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT dailylook_num FROM Looklendar_dailylook WHERE dailylook_num = %s AND user_id = %s;"
+        cursor.execute(query, (dailylook_num, user_id,))
+        result = cursor.fetchone()
+    if result:
+        return "OK"
+    return "FUCK"
+
+# 커뮤니티 글 작성
+def board_insert(db, board_data):
+    with db.cursor() as cursor:
+        query = "INSERT INTO Looklendar_dailylook(dailylook_title, dailylook_text, dailylook_date, user_id, dailylook_outer, dailylook_top, dailylook_bot, dailylook_shoes, dailylook_acc, dailylook_photo, dailylook_s_photo) VALUES(%s, %s, NOW(), %s, %s, %s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, board_data)
+    db.commit()
+
+    return "success"
+
+# 커뮤니티 글 수정
+def board_modify(db, board_new_data):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_dailylook SET dailylook_title = %s, dailylook_text = %s, dailylook_outer = %s, dailylook_top = %s, dailylook_bot = %s, dailylook_shoes = %s, dailylook_acc = %s, dailylook_photo = %s, dailylook_s_photo = %s WHERE dailylook_num = %s;"
+        cursor.execute(query, board_new_data)
+    db.commit()
+
+    return "success"
+
+# 커뮤니티 글 수정 (사진은 그대로 유지)
+def board_modify2(db, board_new_data):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_dailylook SET dailylook_title = %s, dailylook_text = %s, dailylook_outer = %s, dailylook_top = %s, dailylook_bot = %s, dailylook_shoes = %s, dailylook_acc = %s WHERE dailylook_num = %s;"
+        cursor.execute(query, board_new_data)
+    db.commit()
+
+    return "success"
+
+# 커뮤니티 글 삭제
+def board_delete(db, dailylook_num):
+    with db.cursor() as cursor:
+        query = "DELETE FROM Looklendar_dailylook WHERE dailylook_num = %s;"
+        cursor.execute(query, (dailylook_num,))
+    db.commit()
+
+    return "success"
+
+# 커뮤니티 좋아요 등록
+def board_like_up(db, dailylook_num, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT dailylook_num FROM Looklendar_like WHERE dailylook_num = %s AND user_id = %s;"
+        cursor.execute(query, (dailylook_num, user_id,))
+        result = cursor.fetchone()
+        if result:
+            return "fail"
+        else:    
+            query = "INSERT INTO Looklendar_like(dailylook_num, user_id) VALUES(%s, %s);"
+            cursor.execute(query, (dailylook_num, user_id,))
+    db.commit()
+
+    return "success"
+
+# 커뮤니티 좋아요 취소
+def board_like_down(db, dailylook_num, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT dailylook_num FROM Looklendar_like WHERE dailylook_num = %s AND user_id = %s;"
+        cursor.execute(query, (dailylook_num, user_id,))
+        result = cursor.fetchone()
+        if result:
+            query = "DELETE FROM Looklendar_like WHERE dailylook_num = %s AND user_id = %s;"
+            cursor.execute(query, (dailylook_num, user_id,))
+        else:
+            return "fail"
+    db.commit()
+
+    return "success"
+
+# 조회수 증가
+def board_view(db, dailylook_num):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_dailylook SET dailylook_view = dailylook_view + 1 WHERE dailylook_num = %s;"
+        cursor.execute(query, (dailylook_num,))
+    db.commit()
+
+    return "success"
+
+# 댓글 반환
+def comment_select(db, comment_num):
+    with db.cursor() as cursor:
+        query = "SELECT com.comment_num, com.comment_text, IF(com.user_id is NULL, '탈퇴 유저', U.user_nickname), com.dailylook_num, com.comment_date FROM Looklendar_comment AS com JOIN Looklendar_user AS U ON com.user_id = U.user_id WHERE com.dailylook_num = %s ORDER BY com.comment_date ASC;"
+        cursor.execute(query, (comment_num,))
+        result = cursor.fetchall()
+
+    return result
+
+# 댓글 유저 확인
+def comment_apply(db, comment_num, user_id):
+    with db.cursor() as cursor:
+        query = "SELECT comment_num FROM Looklendar_comment WHERE comment_num = %s AND user_id = %s;"
+        cursor.execute(query, (comment_num, user_id,))
+        result = cursor.fetchone()
+    if result:
+        return "OK"
+    return "FUCK"
+# 댓글 작성
+def comment_upload(db, comment_data):
+    with db.cursor() as cursor:
+        query = "INSERT INTO Looklendar_comment(comment_text, user_id, dailylook_num, comment_date) VALUES(%s, %s, %s, NOW());"
+        cursor.execute(query, comment_data)
+    db.commit()
+
+    return "success"
+
+# 댓글 수정
+def comment_modify(db, comment_num, comment_text):
+    with db.cursor() as cursor:
+        query = "UPDATE Looklendar_comment SET comment_text = %s WHERE comment_num = %s;"
+        cursor.execute(query, (comment_text, comment_num,))
+    db.commit()
+    
+    return "success"
+
+# 댓글 삭제
+def comment_delete(db, comment_num):
+    with db.cursor() as cursor:
+        query = "DELETE FROM Looklendar_comment WHERE comment_num = %s;"
+        cursor.execute(query, (comment_num,))
+    db.commit()
+
+    return "success"
 # 파일 이름/경로 생성 및 확장자/길이 확인(이미지만! 원본 + 미리보기) 
 def file_name_encode(file_name):
     # 허용 확장자 / 길이인지 확인
@@ -272,7 +442,7 @@ def file_name_encode(file_name):
             path_name = "user_image1.jpg"
         if file_name == "look_default.png":
             path_name = "look_default.png"
-        # 미리보기 파일
+        #미리보기 파일
         s_path_name = 'S-' + path_name
 
         return {"original": path_name, "resize": s_path_name}

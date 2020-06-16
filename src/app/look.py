@@ -63,8 +63,10 @@ def look__upload():
     BOT = request.form['bot']
     SHOES = request.form['shoes']
     ACC = request.form['acc']
-    files = request.files['file']
-
+    try:
+        files = request.files['file']
+    except:
+        files = None
     # 제목과 상의는 필수 입력!!
     if TITLE == "":
         return jsonify(
@@ -100,9 +102,9 @@ def look__upload():
                 # 사진 저장
                 if PHOTO != "look_default.png":
                     files.save('.' + UPLOAD_PATH + file_check['original'])
-                img = Image.open('.' + UPLOAD_PATH + file_check['original'])
-                resize_img = img.resize((300, 300))
-                resize_img.save('.' + UPLOAD_PATH + file_check['resize'])
+                    img = Image.open('.' + UPLOAD_PATH + file_check['original'])
+                    resize_img = img.resize((300, 300))
+                    resize_img.save('.' + UPLOAD_PATH + file_check['resize'])
             else:
                 return jsonify(
                     STATUS = "Can't Insert PHOTO DB"
@@ -160,7 +162,10 @@ def look__modify():
     BOT = request.form['bot']
     SHOES = request.form['shoes']
     ACC = request.form['acc']
-    files = request.files['file']
+    try:
+        files = request.files['file']
+    except:
+        files = None
     
     # 제목과 상의는 필수 입력!!
     if TITLE == "":
@@ -191,8 +196,7 @@ def look__modify():
             file_result = look_modify(g.db, look_new_data, look_new_data2)
             if file_result == "SUCCESS":
                 # 사진 저장
-                if PHOTO != "look_default.png":
-                    files.save('.' + UPLOAD_PATH + file_check['original'])
+                files.save('.' + UPLOAD_PATH + file_check['original'])
                 img = Image.open('.' + UPLOAD_PATH + file_check['original'])
                 resize_img = img.resize((300, 300))
                 resize_img.save('.' + UPLOAD_PATH + file_check['resize'])
@@ -208,19 +212,17 @@ def look__modify():
             STATUS = "SUCCESS"
         )
     else:
-        PHOTO = "look_default.png"
-        sPHOTO = "S-look_default.png"
         look_new_data = (
             TITLE, COLOR, DATE, PLACE, NUM
         )
         look_new_data2 = (
-            PHOTO, sPHOTO, OUTER, TOP, BOT, SHOES, ACC, NUM
+            OUTER, TOP, BOT, SHOES, ACC, NUM
         )
         for data in look_new_data2:
             if data == "":
                 data = None
-            # DB에 파일 추가
-        file_result = look_modify(g.db, look_new_data, look_new_data2)
+        # DB에 파일 추가
+        file_result = look_modify2(g.db, look_new_data, look_new_data2)
         if file_result == "SUCCESS":
             return jsonify(
                 STATUS = "SUCCESS"

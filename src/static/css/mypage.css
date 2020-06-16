@@ -167,3 +167,10 @@ input:focus {
     transition: .5s all;
     background: #fd5a31;
 }
+
+#user_modal_image{
+    width: 50px;
+    height: 50px;
+    margin:5px;
+    position: relative;
+}
