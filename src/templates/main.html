@@ -50,7 +50,7 @@
     <div class="top_login">
       <a class="before_login" href="/login">login</a>
       <div class="success_login">
-        <img src="../static/files/user_image1.jpg" id="user_image">
+        <img src="../static/image/user_image1.jpg" id="user_image">
         <span id="user_info"></span>
         <div class="user_div">
           <div><button id="mypage" class="user_div_btn" onclick="go_mypage()">마이페이지</button></div>
@@ -110,8 +110,8 @@
         <span class="modal_exit">X</span>
         <div class="modal_form">
           <select name="modal_color" class="modal_color" onchange="select_change(this)">
-            <option value="red" style="background:#d64b4b"></option>
-            <option value="orange" style="background:#ff9f43"></option>
+            <option value="red" style="background: #d63031"></option>
+            <option value="orange" style="background: #ff9f43"></option>
             <option value="yellow" style="background: #ffeaa7"></option>
             <option value="green" style="background:#3ed34b"></option>
             <option value="blue" style="background: #2969e0"></option>
@@ -119,8 +119,8 @@
             <option value="gray" style="background: #636e72"></option>
           </select>
           <select name="modal" id="modal_select" onchange="modal_change(this);">
-            <option value="modal_select_calendar">일정</option>
-            <option value="modal_select_look">데일리룩</option>
+            <option value="modal_select_calendar" id="m_s_c">일정</option>
+            <option value="modal_select_look" id="m_s_l" disabled>데일리룩</option>
           </select><br>
           <input type="text" class="modal_title modal_text" placeholder="제목 입력" maxlength="45"><br>
           <input type="date" class="modal_start_time modal_text" placeholder="날짜 입력"><br>
@@ -132,7 +132,7 @@
           <input type="text" class="modal_shoes modal_text" placeholder="신발">
           <input type="text" class="modal_acc modal_text" placeholder="악세서리">
           
-          <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" value="../static/files/look_default.png"/>
+          <input type="file" class="modal_image" accept="image/*" onchange="image_load(event);" value="../static/image/look_default.png"/>
           <div id="modal_image_container"></div>
 
           <button id="modal_submit">저장</button>
@@ -143,9 +143,12 @@
   </div>
 </body>
 
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 <link rel="stylesheet" type="text/css" href="../static/css/calendar.css">
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="../static/js/main.js"></script>
 <script type="text/javascript" src="../static/js/calendar.js"></script>
 

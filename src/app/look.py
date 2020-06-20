@@ -9,10 +9,6 @@ from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
 from PIL import Image
-from pprint import pprint
-#ImageFile.LOAD_TRUNCATED_IMAGES = True
-#import time
-#from werkzeug import *
 from werkzeug.utils import secure_filename
 import datetime
 ###########################################

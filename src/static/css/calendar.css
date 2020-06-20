@@ -100,9 +100,10 @@ body {
 .cal-head{
     width:100%;
     color: gray;
+    display: inline-flex;
 }
 .cal-head span{
-    margin:6%;
+    margin: 0 auto;
 }
 /* grid layout */
 .cal-table {

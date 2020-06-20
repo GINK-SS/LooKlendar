@@ -10,9 +10,6 @@ from flask_jwt_extended import *
 from flask_cors import CORS
 from PIL import Image
 from pprint import pprint
-#ImageFile.LOAD_TRUNCATED_IMAGES = True
-#import time
-#from werkzeug import *
 from werkzeug.utils import secure_filename
 import datetime
 ###########################################
@@ -21,8 +18,6 @@ from db_func import *
 BP = Blueprint('board', __name__)
 
 UPLOAD_PATH = "/static/files/"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
-IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
 # 커뮤니티 전체글 반환
 @BP.route('/board/main', methods=['POST'])
@@ -31,6 +26,27 @@ def board__look():
     PAGE = request.get_json()['page']
     result = {}
     boards = boards_select(g.db, int(PAGE))
+    if get_jwt_identity():
+        user = user_select(g.db, get_jwt_identity())
+        if user is None:
+            return jsonify(
+                "FucKlendar"
+            )
+    
+    result.update(
+        STATUS = "SUCCESS",
+        BOARD = boards
+    )
+    return jsonify(result)
+
+# 커뮤니티 검색 글 반환
+@BP.route('/board/search', methods=['POST'])
+#@jwt_optional
+def board__look_search():
+    PAGE = request.get_json()['page']
+    TEXT = request.get_json()['text']
+    result = {}
+    boards = boards_select_search(g.db, text, int(PAGE))
     if get_jwt_identity():
         user = user_select(g.db, get_jwt_identity())
         if user is None:
@@ -84,31 +100,26 @@ def board__upload():
         # 확장자 및 경로 및 이름 생성
         if file_check is not None:
             PHOTO = file_check['original']
-            sPHOTO = file_check['resize']
         else:
             return jsonify(
                 STATUS = "Wrong PHOTO"
             )
         board_data = (
-            TITLE, TEXT, user['user_id'], OUTER, TOP, BOT, SHOES, ACC, PHOTO, sPHOTO
+            TITLE, TEXT, user['user_id'], OUTER, TOP, BOT, SHOES, ACC, PHOTO
         )
         func_result = board_insert(g.db, board_data)
         if func_result == "success":
             # 사진 저장
             if PHOTO != "look_default.png":
                 files.save('.' + UPLOAD_PATH + file_check['original'])
-                img = Image.open('.' + UPLOAD_PATH + file_check['original'])
-                resize_img = img.resize((300, 300))
-                resize_img.save('.' + UPLOAD_PATH + file_check['resize'])
         else:
             return jsonify(
                 STATUS = "Can't Insert PHOTO DB"
             )
     else:
         PHOTO = "look_default.png"
-        sPHOTO = "S-look_default.png"
         board_data = (
-            TITLE, TEXT, user['user_id'], OUTER, TOP, BOT, SHOES, ACC, PHOTO, sPHOTO
+            TITLE, TEXT, user['user_id'], OUTER, TOP, BOT, SHOES, ACC, PHOTO
         )
         func_result = board_insert(g.db, board_data)
     ## result를 fail로 초기화
@@ -158,21 +169,17 @@ def board__modify():
         # 확장자 및 경로 및 이름 생성
         if file_check is not None:
             PHOTO = file_check['original']
-            sPHOTO = file_check['resize']
         else:
             return jsonify(
                 STATUS = "Wrong PHOTO"
             )
         board_new_data = (
-            TITLE, TEXT, OUTER, TOP, BOT, SHOES, ACC, PHOTO, sPHOTO, NUM
+            TITLE, TEXT, OUTER, TOP, BOT, SHOES, ACC, PHOTO, NUM
         )
         func_result = board_modify(g.db, board_new_data)
         if func_result == "success":
             # 사진 저장
             files.save('.' + UPLOAD_PATH + file_check['original'])
-            img = Image.open('.' + UPLOAD_PATH + file_check['original'])
-            resize_img = img.resize((300, 300))
-            resize_img.save('.' + UPLOAD_PATH + file_check['resize'])
         else:
             return jsonify(
                 STATUS = "Can't Insert PHOTO DB"
@@ -180,9 +187,8 @@ def board__modify():
     else:
         if REMOVE == "1":
             PHOTO = "look_default.png"
-            sPHOTO = "S-look_default.png"
             board_new_data = (
-                TITLE, TEXT, OUTER, TOP, BOT, SHOES, ACC, PHOTO, sPHOTO, NUM
+                TITLE, TEXT, OUTER, TOP, BOT, SHOES, ACC, PHOTO, NUM
             )
             func_result = board_modify(g.db, board_new_data)
         else:
@@ -226,7 +232,7 @@ def board__delete():
     )
 
 # 좋아요 누르기
-@BP.route('/board/like_up/<int:dailylook_num>')
+@BP.route('/board/like/<int:dailylook_num>')
 @jwt_required
 def board__like_up(dailylook_num):
     user = user_select(g.db, get_jwt_identity())
@@ -234,22 +240,7 @@ def board__like_up(dailylook_num):
         return jsonify(
             "FucKlendar"
         )
-    result = board_like_up(g.db, dailylook_num, user['user_id'])
-
-    return jsonify(
-        SUCCESS = result
-    )
-
-# 좋아요 취소
-@BP.route('/board/like_down/<int:dailylook_num>')
-@jwt_required
-def board__like_down(dailylook_num):
-    user = user_select(g.db, get_jwt_identity())
-    if user is None:
-        return jsonify(
-            "FucKlendar"
-        )
-    result = board_like_down(g.db, dailylook_num, user['user_id'])
+    result = board_like_upNdown(g.db, dailylook_num, user['user_id'])
 
     return jsonify(
         SUCCESS = result

@@ -8,17 +8,13 @@ from flask import *
 from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
-
 import datetime
-#from flask_mail import Mail, Message
-#import time
 ###########################################
 from db_func import *
 
 BP = Blueprint('auth', __name__)
 
 UPLOAD_PATH = "/static/files/"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
 #ok#회원가입
@@ -101,8 +97,8 @@ def auth__sign_up():
         return jsonify(
             STATUS = "Wrong NICK"
         )
-    ##### ok # 입력하지 않은 것 확인 ###############################
-    ######################################################
+    ##### ok # 입력하지 않은 것 확인 ###########
+    #######################################
     #ok# 아이디를 입력하지 않았으면 돌려보낸다
     if ID == "":
         return jsonify(
@@ -129,8 +125,8 @@ def auth__sign_up():
             STATUS = "INSERT NICK"
         )
 
-    ##### 글자 수 제한 #######################################
-    #######################################################
+    ##### 글자 수 제한 ###########
+    ###########################
     #ok# 비밀번호가 너무 길면 돌려보낸다
     if len(PW) > 100:
         return jsonify(
@@ -151,7 +147,7 @@ def auth__sign_up():
         return jsonify(
             STATUS = "LONG NICK"
         )
-    #####################################################    
+    ########################    
     #디비에 정보 삽입
     #ok# 생년월일을 입력하지 않았다면 NULL 입력
     if BIRTH == "":
@@ -179,7 +175,7 @@ def auth__sign_up():
         if func_result == "success":
             if PHOTO != "user_image1.jpg":
                 files.save('.' + UPLOAD_PATH + file_check['original'])        
-    # 수정필요# 사진 첨부 안했다면 NULL 입력
+    #ok# 사진 첨부 안했다면 NULL 입력
     else:
         PHOTO = "user_image1.jpg"
         user_data = (
@@ -232,7 +228,7 @@ def auth__login():
                 STATUS = "INCORRECT PW"
             )
     
-#littleok# 회원정보수정 ## file 사진 제외 모두 확인완료
+#ok# 회원정보수정 ##
 @BP.route('/auth/modify', methods = ['POST'])
 @jwt_required
 def auth__modify():
@@ -383,21 +379,6 @@ def auth__find_id():
         RESULT = result
     )
 
-# #비밀번호 찾기 ## 수정 필요 ##
-# @BP.route('/auth/find_pw', methods = ['POST'])
-# def auth__find_pw():
-#     NAME = request.get_json()['name']
-#     EMAIL = request.get_json()['email']
-#     ID = request.get_json()['id']
-
-#     result = user_find_pw(g.db, NAME, EMAIL, ID)
-#     return jsonify(
-#         RESULT = result
-#     )
-############################################################################
-################## 수정 필요 #################################################
-############################################################################
-
 #회원정보반환
 @BP.route('/auth/get_userinfo')
 @jwt_required
@@ -408,8 +389,6 @@ def get_userinfo():
         return jsonify(
             "FucKlendar"
         )
-    ##여기서부턴 뭘 계속 히오니한테 전달해줄지 생각
-
 
     return jsonify(
         result = "success",
@@ -441,53 +420,3 @@ def auth__out():
         return jsonify(
             STATUS = "Wrong PW"
         )
-
-
-    
-##########################################################################
-###### 비밀번호 찾기를 위한 이메일 보내기 이메일 내용으로 비밀번호 변경 ## 수정 필요########
-##########################################################################
-# app.config['MAIL_SERVER']='smtp.gmail.com'
-# app.config['MAIL_PORT'] = 465
-# app.config['MAIL_USERNAME'] = 'looklendar@gmail.com'
-# app.config['MAIL_PASSWORD'] = 'looklook1!'
-# app.config['MAIL_USE_TLS'] = False
-# app.config['MAIL_USE_SSL'] = True
-
-# @app.route("/email", methods=['post'])
-# def email__test(receiver, NEW):
-
-#     senders = 'looklendar@gmail.com'
-#     content = '새로운 비밀번호는 %s 입니다. 비밀번호를 변경해주시기 바랍니다.' % NEW
-#     #밑에 줄 필요 없을 듯?
-#     #receiver = receiver.split(',')   
-#     #for i in range(len(receiver)):
-#     #    receiver[i] = receiver[i].strip()
-
-#     result = send_email(senders, receiver, content)
-        
-#     if not result:
-#         pw_result = user_pw_modify(g.db, generate_password_hash(NEW), NEW)
-#         return jsonify(
-#             STATUS = "EMAIL IS SENT",
-#             STATUS2 = pw_result
-#         )
-#     else:
-#         return jsonify(
-#             STATUS = "EMAIL IS NOT SENT"
-#         )
-# # 이메일 보내기
-# def send_email(senders, receiver, content):
-#     try:
-#         mail = Mail(app)
-#         msg = Message('NEW PASSWORD! - LooKlendar', sender = senders, recipients = receiver)
-#         msg.body = content
-#         mail.send(msg)
-#     except Exception:
-#         pass 
-#     finally:
-#         pass
-############################################################################
-############################################################################
-############################################################################
-# 파일 이름 변환 ##수정 필요

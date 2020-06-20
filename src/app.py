@@ -10,13 +10,14 @@ from flask_cors import CORS
 ##########################################
 from db_init import *
 #app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
+
 #APPS
 import auth, look, event, board
 
 app = Flask(__name__, instance_relative_config=True)
 CORS(app)
 
-#Debug or Release
+# 디버깅 및 릴리즈
 app.config.update(
 		DEBUG = True,
 		JWT_SECRET_KEY = "LooKlendar with GINK-SS"

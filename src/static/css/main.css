@@ -424,9 +424,29 @@ a.menu-icon.closed {
 .modal_color{
     background: #d63031;
 }
+.modal_color option:nth-child(1){
+    background: #d64b4b;
+}
+.modal_color option:nth-child(2){
+    background:#ff9f43;
+}
+.modal_color option:nth-child(3){
+    background:#ffeaa7;
+}
+.modal_color option:nth-child(4){
+    background:#3ed34b;
+}
+.modal_color option:nth-child(5){
+    background:#2969e0;
+}
+.modal_color option:nth-child(6){
+    background:#a29bfe;
+}
+.modal_color option:nth-child(7){
+    background:#636e72;
+}
 .modal_color option:hover{
     background: black;
-    color:pink;
 }
 
 .modal_image, .modal_outer, .modal_top, .modal_bot, .modal_shoes, .modal_acc{

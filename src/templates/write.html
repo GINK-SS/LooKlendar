@@ -11,44 +11,46 @@
             <div class="signup_box">
                 <div>
                     * 제목 :
-                    <input type="text" placeholder="제목 입력" id="signup_id" class="text">
+                    <input type="text" placeholder="제목 입력" id="write_title" class="text">
                 </div>
                 <div>
                     * 내용 :
-                    <input type="text" placeholder="내용 입력" id="signup_pw" class="text">
+                    <textarea cols="10" placeholder="내용 입력" id="write_text" class="text text2" ></textarea>
                 </div>
                 <div>
                     아우터 :
-                    <input type="text" placeholder="아우터 입력" id="signup_pw2" class="text">
+                    <input type="text" placeholder="아우터 입력" id="write_outer" class="text">
                 </div>
                 <div>
-                    상의 :
-                    <input type="text" placeholder="상의 입력" id="signup_email" class="text">
+                    * 상의 :
+                    <input type="text" placeholder="상의 입력" id="write_top" class="text">
                 </div>
                 <div>
                     하의 :
-                    <input type="text" placeholder="하의 입력" id="signup_name" class="text">
+                    <input type="text" placeholder="하의 입력" id="write_bot" class="text">
                 </div>
                 <div>
                     신발 :
-                    <input type="text" placeholder="신발 입력" id="signup_nickname" class="text">
+                    <input type="text" placeholder="신발 입력" id="write_shoes" class="text">
                 </div>
                 <div>
                     악세서리 :
-                    <input type="text" placeholder="악세서리 입력" id="signup_birth" class="text">
+                    <input type="text" placeholder="악세서리 입력" id="write_acc" class="text">
                 </div>
-                <input type="file" class="modal_image" id="signup_photo" accept="image/*"
+                <input type="file" class="modal_image" id="write_photo" accept="image/*"
                         onchange="image_load(event);" value="../files/user_image1.jpg"/>          
                     <div id="modal_image_container"></div>
-                <button id="signup_button" class="signup_btn" onclick="location.href='/dailylook'">저장</button>
+                <button id="write_botton" class="signup_btn">저장</button>
             </div>
         </div>
 
     </div>
 </body>
 
-</html>
 
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="../static/css/write.css">
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="../static/js/write.js"></script>
+</html>

@@ -8,7 +8,6 @@ from flask import *
 from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
-#import time
 ###########################################
 from db_func import *
 

@@ -232,7 +232,8 @@ $calBody.addEventListener('click', (e) => {
                             var split_date = event.childNodes[1].attributes[0].nodeValue.split("-");
                             var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
                             loadYYMM(new Date(start_date));
-                            document.querySelector(".modal_background").style.display = "none";
+                            document.querySelector(".cal_modal_background").style.display = "none";
+                            cal_modal_clean();
                         })
                     })
                     
@@ -302,7 +303,8 @@ $calBody.addEventListener('click', (e) => {
                             var split_date = event.childNodes[1].attributes[0].nodeValue.split("-");
                             var start_date = split_date[0] + "," + split_date[1] + "," + split_date[2];
                             loadYYMM(new Date(start_date));
-                            document.querySelector(".modal_background").style.display = "none";
+                            document.querySelector(".cal_modal_background").style.display = "none";
+                            cal_modal_clean();
                         })
                     })
                 }
@@ -334,9 +336,8 @@ document.querySelector(".cal_modal_exit").addEventListener("click", function () 
     }
 });
 
-// -------------------- 달력 만들때(loadYYMM)마다 호출해서 일정 입력함 ---------------------- //
 
-// --------------------------- 일정 불러오기 ----------------------- //
+// --------------------------- 일정 불러오기 ------------------------- //
 function get_calendar_FetchAPI() {
     // 토큰값이 0이거나 없을때 fetch 실행x
     if (sessionStorage.length == 0) return;
@@ -464,8 +465,8 @@ function get_calendar_modal_FetchAPI(e) {
                         append_calendar_modal += '</div>';
                     }
 
-                    append_calendar_modal += '<img src="../static/files/cal_pen.png" width="50px" height="50px">'
-                    append_calendar_modal += '<img src="../static/files/trash2.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/image/cal_pen.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/image/trash2.png" width="50px" height="50px">'
                     append_node.innerHTML = append_calendar_modal;
                     append_node.classList.add("cal_modal_event");
                     append_node.style.background = event['event_color'];
@@ -495,8 +496,8 @@ function get_look_modal_FetchAPI(e) {
         .then((res) => {
             for (event of res["RESULT"]) {
                 if (e.attributes[2].nodeValue == event['event_date']) {
-                    let append_node = document.createElement("div");
-                    let append_calendar_modal = '';
+                    var append_node = document.createElement("div");
+                    var append_calendar_modal = '';
                     append_calendar_modal += '<div title="'
                     append_calendar_modal += event['event_title'];
                     append_calendar_modal += '" ecolor="'
@@ -547,8 +548,8 @@ function get_look_modal_FetchAPI(e) {
                     append_calendar_modal += '" id="event_image" file="';
                     append_calendar_modal += event['look_s_photo'];
                     append_calendar_modal += '">';
-                    append_calendar_modal += '<img src="../static/files/cal_pen.png" width="50px" height="50px">'
-                    append_calendar_modal += '<img src="../static/files/trash2.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/image/cal_pen.png" width="50px" height="50px">'
+                    append_calendar_modal += '<img src="../static/image/trash2.png" width="50px" height="50px">'
                     append_node.innerHTML = append_calendar_modal;
                     append_node.classList.add("cal_modal_event");
                     append_node.style.background = event['event_color'];

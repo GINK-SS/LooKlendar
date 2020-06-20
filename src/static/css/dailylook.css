@@ -1,0 +1,67 @@
+.dailylook{
+    padding: 2em;
+    background: beige;
+    min-height: 90%;
+}
+
+.p_container{
+    display: flex;
+}
+
+.post{
+    width: 25%;
+    text-align: center;
+    margin-top: 2%;
+}
+.p_date{
+    color: gray;
+}
+.p_title{
+    font-size: 1em;
+    font-weight: bold;
+}
+.p_view{
+    color: gray;
+}
+.p_image{
+    width: 90%;
+}
+
+.pagination{
+    list-style:none;
+    text-align:center;
+    display: inline-flex;
+    padding-inline-start: 0;
+    width: 100%;
+}
+
+.pagination li{
+    padding: 10px;
+    border: 1px solid darkslategrey;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: auto;
+    /* width: 10%; */
+}
+
+.pagination li:hover{
+    background: #c7c7c7;
+}
+
+.pagination a {
+    display: block;
+    text-decoration: none;
+    color: #616161;
+    transition: all .3s ease-in-out 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #3b3b3b;
+    padding: 15px;
+}
+
+.active{
+    background-color:#8b8a8a;
+}
+
+
