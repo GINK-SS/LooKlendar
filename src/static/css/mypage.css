@@ -1,7 +1,7 @@
 .mypage {
     padding: 1em 0 1em;
     background: #ffba8b !important;
-    height: 95%;
+    min-height: 95%;
 }
 
 h1 {
@@ -54,6 +54,9 @@ input:focus {
     font-weight: 600;
 }
 
+.flex{
+    display: flex;
+}
 .userinfo_modify {
     font-size: 1em;
     font-weight: bold;
@@ -64,8 +67,8 @@ input:focus {
     cursor: pointer;
     padding: 1em;
     -webkit-appearance: none;
-    width: 49%;
-    letter-spacing: 4px;
+    flex:1;
+    letter-spacing: 2px;
 }
 
 .userinfo_modify:hover {

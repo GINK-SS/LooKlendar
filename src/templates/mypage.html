@@ -1,5 +1,5 @@
 <header>
-
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 </header>
 
 <body>
@@ -29,8 +29,11 @@
                    <span>프로필 사진 : </span>
                     <img src="" id="user_image">
                 </div>
+                <div class="flex">
                 <button id="userinfo_modify" class="userinfo_modify">회원정보 수정</button>
                 <button id="password_modify" class="userinfo_modify">비밀번호 변경</button>
+                <button id="authout" class="userinfo_modify">회원 탈퇴</button>
+            </div>
             </div>
 
 
@@ -41,11 +44,11 @@
                     <div class="modal_form">
                         <div>
                             * E-mail : 특수문자 X / ex) look@sejong.com
-                            <input type="text" placeholder="이메일 입력" id="modify_email" class="text" autocomplete="off">
+                            <input type="text" placeholder="이메일 입력" id="modify_email" class="text" autocomplete="off" maxlength="30">
                         </div>
                         <div>
-                            * Nickname :
-                            <input type="text" placeholder="닉네임 입력" id="modify_nickname" class="text" autocomplete="off">
+                            * Nickname : 20자 미만
+                            <input type="text" placeholder="닉네임 입력" id="modify_nickname" class="text" autocomplete="off" maxlength="20">
                         </div>
                         <div>
                             Gender :
@@ -76,14 +79,28 @@
                 <span id="pw_modal_exit" class="modal_exit">X</span>
                 <div class="modal_form">
                     <div>
-                        * PW : 100자 미만
-                        <input type="password" placeholder="비밀번호 입력" id="modify_pw" class="text" autocomplete="off">
+                        * PW : 30자 미만
+                        <input type="password" placeholder="비밀번호 입력" id="modify_pw" class="text" autocomplete="off" maxlength="30">
                     </div>
                     <div>
                         * PW check :
-                        <input type="password" placeholder="비밀번호 확인" id="modify_pw2" class="text" autocomplete="off">
+                        <input type="password" placeholder="비밀번호 확인" id="modify_pw2" class="text" autocomplete="off" maxlength="30">
                     </div>
                     <button id="pw_modify_button" class="modify_btn">수정하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!------------------------ 회원 탈퇴 모달 -------------------------->
+        <div id="authout_modal_background" class="modal_background">
+            <div class="userinfo_modify_modal_box modal_box">
+                <span id="authout_modal_exit" class="modal_exit">X</span>
+                <div class="modal_form">
+                    <div>
+                        * 비밀번호를 입력해주세요.
+                        <input type="password" placeholder="비밀번호 입력" id="authout_pw" class="text" autocomplete="off" maxlength="30">
+                    </div>
+                    <button id="authout_button" class="modify_btn">탈퇴하기</button>
                 </div>
             </div>
         </div>
@@ -92,5 +109,5 @@
 </body>
 
 <link rel="stylesheet" type="text/css" href="../static/css/mypage.css">
-<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+
 <script src="../static/js/mypage.js"></script>

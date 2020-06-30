@@ -111,3 +111,70 @@ input:focus {
     height: 1.5em;
     margin-right: 0.5em;
 }
+
+/*  ---------------- 회원 정보 수정 모달 css -------------- */
+.modal_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: fade(#000, 85%);
+    z-index: 998;
+    display: none;
+}
+
+.modal_box{
+    background: rgba(0, 0, 0, 0.18);
+    height: 70%;
+    width: 50%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top:0; left:0; bottom:0; right:0;
+    z-index: 999;
+}
+.modal_exit{
+    width: 1.5em;
+    height: 1.5em;
+    color: black;
+    font-size: 1.5em;
+    border-radius: 50%;
+    position: relative;
+    text-align: center;
+    line-height: 1.5em;
+    float:right;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.modal_exit:hover{
+    background:#74b9ff;
+}
+.modal_form{
+    padding: 1em;
+    color: #fff;
+    background: #74b9ff !important;
+    transition: all .3s;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.modify_btn{
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: #a4d1ff;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+    width: 94.5%;
+    margin: 0.7em;
+    letter-spacing: 2px;
+}
+.modify_btn:hover{
+    transition: .5s all;
+    background: #5e61fd;
+}

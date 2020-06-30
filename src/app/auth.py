@@ -97,8 +97,6 @@ def auth__sign_up():
         return jsonify(
             STATUS = "Wrong NICK"
         )
-    ##### ok # 입력하지 않은 것 확인 ###########
-    #######################################
     #ok# 아이디를 입력하지 않았으면 돌려보낸다
     if ID == "":
         return jsonify(
@@ -124,9 +122,6 @@ def auth__sign_up():
         return jsonify(
             STATUS = "INSERT NICK"
         )
-
-    ##### 글자 수 제한 ###########
-    ###########################
     #ok# 비밀번호가 너무 길면 돌려보낸다
     if len(PW) > 100:
         return jsonify(
@@ -158,7 +153,7 @@ def auth__sign_up():
             return jsonify(
                 STATUS = "Wrong BIRTH"
             )
-    # 사진 등록 했다면 (등록 안했으면 기본이미지)
+    # 사진 등록 했다면
     if files:
         file_check = file_name_encode(files.filename)
         # 확장자 및 경로 및 이름 생성
@@ -175,7 +170,7 @@ def auth__sign_up():
         if func_result == "success":
             if PHOTO != "user_image1.jpg":
                 files.save('.' + UPLOAD_PATH + file_check['original'])        
-    #ok# 사진 첨부 안했다면 NULL 입력
+    #ok# 사진 첨부 안했다면 기본 이미지 입력
     else:
         PHOTO = "user_image1.jpg"
         user_data = (
@@ -207,7 +202,7 @@ def auth__login():
     PW = request.get_json()['pw']
     
     #ok# ID로 DB 접속 후 유저 있는지 확인
-    user = user_select(g.db, ID)
+    user = user_selectp(g.db, ID)
     #ok# DB에 ID가 없다면 없다고 출력
     if user == "NOT FOUND":
         return jsonify(
@@ -316,7 +311,7 @@ def auth__modify():
             return jsonify(
                 STATUS = "SUCCESS"
             )
-    #ok# 사진 첨부 안했다면 NULL 입력
+    #ok# 사진 첨부 안했다면 기본 이미지 등록
     else:
         if REMOVE == "1":
             PHOTO = "user_image1.jpg"
@@ -333,11 +328,12 @@ def auth__modify():
             return jsonify(
                 STATUS = "SUCCESS"
             )
+
 # 비밀번호 변경
 @BP.route('/auth/modify_pw', methods = ['POST'])
 @jwt_required
 def auth__modify_pw():
-    user = user_select(g.db, get_jwt_identity())
+    user = user_selectp(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"
@@ -404,7 +400,7 @@ def get_userinfo():
 @BP.route('/auth/authout', methods = ['POST'])
 @jwt_required
 def auth__out():
-    user = user_select(g.db, get_jwt_identity())
+    user = user_selectp(g.db, get_jwt_identity())
     if user is None:
         return jsonify(
             "FucKlendar"

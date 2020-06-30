@@ -38,7 +38,6 @@ function signup_FetchAPI_v1(){
     })
     .then(res => res.json())
     .then(res => {
-        console.log(res);
         if(res['STATUS'] == "SUCCESS"){
             alert("회원가입 완료! 환영합니다. "+ name + "님!");
             window.location.href="/login";

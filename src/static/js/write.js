@@ -30,7 +30,6 @@ function write_FetchAPI_v1(){
 
     send_data.append('file', file);
 
-    console.log(token);
     fetch('/board/upload',{
         method: "POST",
         headers: {
@@ -42,7 +41,6 @@ function write_FetchAPI_v1(){
     })
     .then(res => res.json())
     .then(res => {
-        console.log(res);
         if(res['STATUS'] == "SUCCESS"){
             alert("글쓰기 완료!");
             window.location.href="/dailylook";
@@ -51,7 +49,7 @@ function write_FetchAPI_v1(){
             alert("알 수 없는 오류가 발생하였습니다. 다시 시도 해주세요.");
         }
     })
-    // .catch(err => console.log(err))
+    .catch(err => console.log(err))
 }
 
 document.querySelector("#write_botton").addEventListener("click",function(){
@@ -65,6 +63,14 @@ document.querySelector("#write_botton").addEventListener("click",function(){
     }
     else if(document.querySelector("#write_top").value.length ==0){
         alert("상의를 입력해주세요!");
+        return;
+    }
+    else if(document.querySelector("#write_bot").value.length ==0){
+        alert("하의를 입력해주세요!");
+        return;
+    } 
+    else if(document.querySelector("#write_shoes").value.length ==0){
+        alert("신발을 입력해주세요!");
         return;
     } 
     write_FetchAPI_v1();

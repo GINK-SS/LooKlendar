@@ -1,7 +1,22 @@
 .dailylook{
-    padding: 2em;
+    padding: 1.5em 2em;
     background: beige;
     min-height: 90%;
+    /* text-align: center; */
+}
+.logo{
+    color: coral;
+    font-size: 2em;
+    font-weight: bold;
+    margin-left: 1.5em;
+}
+.home{
+    width: 2.5em;
+    height: 2.5em;
+    position: absolute;
+}
+.gomain{
+    padding: 3px;
 }
 
 .p_container{
@@ -12,21 +27,92 @@
     width: 25%;
     text-align: center;
     margin-top: 2%;
+    margin: 2% 1% 1% 0;
+    background: whitesmoke;
+    padding: 1% 0;
+    border: solid gray;
+    border-radius: 5px;
+    cursor: pointer;
 }
+
+.write_btn{
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: darkslategrey;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+}
+.write_btn:hover {
+    -webkit-transition: .5s all;
+    -moz-transition: .5s all;
+    -o-transition: .5s all;
+    -ms-transition: .5s all;
+    transition: .5s all;
+    background: rgb(64, 100, 69);
+}
+
+.search_btn{
+    display: inline;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: darkslategrey;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+}
+.search_btn:hover {
+    -webkit-transition: .5s all;
+    -moz-transition: .5s all;
+    -o-transition: .5s all;
+    -ms-transition: .5s all;
+    transition: .5s all;
+    background: rgb(64, 100, 69);
+}
+
+.search_input{
+    display: inline;
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    border: none;
+    padding: 1em;
+    margin: 0 auto;
+    border: solid 1px darkslategrey;
+    font-family: 'Roboto', sans-serif;
+}
+
+.search_select, .array_select{
+    font-size: 1em;
+    border: solid 1px darkslategray;
+    padding: 1em;
+}
+
+
 .p_date{
     color: gray;
 }
 .p_title{
-    font-size: 1em;
+    font-size: 1.2em;
     font-weight: bold;
 }
 .p_view{
     color: gray;
 }
 .p_image{
-    width: 90%;
+    width: 19vw;
+    height: 19vw;
 }
-
+.orange{
+    color: rgb(255, 124, 2);
+    font-weight: bold;
+}
 .pagination{
     list-style:none;
     text-align:center;
@@ -65,3 +151,492 @@
 }
 
 
+/* -------------- 클릭한 게시글 css ---------------- */
+.post_modal_background{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: fade(#000, 85%);
+    z-index: 998;
+    display: none;
+    /* opacity:0.9; */
+    transition: all 0.5s ease;
+}
+
+.clicked_post{
+    height: 85%;
+    width: 85%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top:0; left:0; bottom:0; right:0;
+    z-index: 999;
+    background: beige;
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+}
+.click_post img{
+    width: 50%;
+}
+.post_modal_exit{
+    width: 2em;
+    height: 2em;
+    color: black;
+    font-size: 2em;
+    border-radius: 50%;
+    position: absolute;
+    top:5px;
+    right: 5px;
+    text-align: center;
+    line-height: 2em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.post_modal_exit:hover{
+    background:#74b9ff;
+}
+.like_btn{
+    font-size: 0.8em;
+    font-weight: bold;
+    color: black;
+    background: whitesmoke;
+    outline: none;
+    border: 1px solid darkgreen;
+    cursor: pointer;
+    padding: 0.7em;
+    -webkit-appearance: none;
+    border-radius: 5px;
+}
+.like_btn:hover{
+    transition: .5s all;
+    background: rgb(245, 186, 186);
+}
+.p_cloth{
+    font-size: 1em;
+    font-weight: bold;
+    margin: 1% auto;
+}
+.p_text{
+    margin: 3% auto;
+}
+.p_btn{
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: rgb(157, 214, 214);
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 0.5em;
+    -webkit-appearance: none;
+    width: 20%;
+    margin: 1% auto;
+}
+.p_btn:hover{
+    background: cadetblue;
+    transition: .5s all;
+}
+/* --------------댓글 css--------------- */
+.comment_write{
+    margin-top: 1%;
+}
+.comment{
+    background: whitesmoke;
+    border-radius: 5px;
+    margin: 1% auto;
+    border:solid 1px darkgreen;
+    padding: 1%;
+    width: 88%;
+    text-align: left;
+}
+
+.comment_btn {
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background: darkslategrey;
+    outline: none;
+    border: 1px solid whitesmoke;
+    cursor: pointer;
+    padding: 1em;
+    -webkit-appearance: none;
+    width: 90%;
+}
+
+.comment_btn:hover {
+    -webkit-transition: .5s all;
+    -moz-transition: .5s all;
+    -o-transition: .5s all;
+    -ms-transition: .5s all;
+    transition: .5s all;
+    background: rgb(64, 100, 69);
+}
+
+.text {
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    width: 90%;
+    display: block;
+    border: none;
+    padding: 1em;
+    margin: 0 auto;
+    border: solid 1px darkslategrey;
+    font-family: 'Roboto', sans-serif;
+}
+
+input {
+    -webkit-transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+    transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 96%,darkslategrey 4%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, darkslategrey 4%);
+    background-position: -1200px 0;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+input:focus {
+    box-shadow: none;
+    outline: none;
+    background-position: 0 0;
+    font-weight: 600;
+}
+
+.c_nickname{
+    font-weight: bold;
+}
+.c_text{
+    margin: 1% auto;
+}
+.c_time{
+    margin-right: 2%;
+}
+.c_image{
+    margin-right: 1%;
+}
+.c_image:hover{
+    background: rgb(175, 214, 0);
+    transition: .5s all;
+    border-radius: 2px;
+}
+
+h1 {
+    color: darkslategrey;
+    letter-spacing: 2px;
+}
+
+/* -----------------------------------게시글 수정 모달 css ----------------------------- */
+.modal_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: fade(#000, 85%);
+    z-index: 998;
+    display: none;
+    /* opacity:0.9; */
+}
+
+.modal_box{
+    background: rgba(0, 0, 0, 0.18);
+    height: 70%;
+    width: 50%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top:0; left:0; bottom:0; right:0;
+    z-index: 999;
+}
+
+.modal_exit{
+    width: 2em;
+    height: 2em;
+    color: black;
+    font-size: 2em;
+    border-radius: 50%;
+    position: relative;
+    text-align: center;
+    line-height: 2em;
+    float:right;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.modal_exit:hover{
+    background:#74b9ff;
+}
+
+.modal_form{
+    padding: 1em;
+    color: darkslategrey;
+    background: beige;
+    transition: all .3s;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.modal_form input{
+    font-size: 1em;
+    color: black;
+    font-weight: 600;
+    width: 94.5%;
+    border: none;
+    padding: 0.7em;
+    margin: 0.7em;
+    border: solid 1px darkslategrey;
+    font-family: 'Roboto', sans-serif;
+}
+
+.post_image{
+    width: 50px;
+    height: 50px;
+    margin:5px;
+}
+#checkbox{
+    width: unset;
+}
+
+/* --------------------------댓글 수정 모달 css------------------------- */
+.comment_modal_background{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    background: fade(#000, 85%);
+    z-index: 999;
+    display: none;
+    /* opacity:0.9; */
+}
+
+
+
+/* ------------------- 메뉴 css ------------------ */
+
+/* 사이드 메뉴 css */
+.side_menu {
+    background: darkslategray;
+    height: 100vh;
+    left: -250px;
+    position: fixed;
+    top: 0;
+    width: 250px;
+    transition: all 0.3s ease-in-out;
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.side_menu .container {
+    padding: 0 1em;
+}
+.side_menu{
+    z-index: 996;
+    
+}
+/* HAMBURGER STYLES ----- */
+.burger_box {
+    display: block;
+    float: right;
+    margin-right: -45px;
+}
+
+.burger_box a.menu-icon {
+    display: inline-block;
+    float: none;
+    height: 25px;
+    padding: 10px;
+    opacity: .5;
+    width: 25px;
+    z-index: 100;
+}
+
+.burger_box a.menu-icon,
+.burger_box a.menu-icon::before,
+.burger_box a.menu-icon::after{
+    box-sizing: unset;
+}
+
+.burger_box a:hover,
+.burger_box a.menu-icon.opened {
+    opacity: 1;
+}
+
+.burger_box a.menu-icon.opened,
+a.menu-icon.closed {
+    background: darkslategray;
+}
+
+.burger_box .menu-icon_box {
+    display: inline-block;
+    height: 25px;
+    position: relative;
+    text-align: left;
+    width: 25px;
+}
+
+.burger_box .menu-icon_line {
+    background: #fff;
+    border-radius: 2px;
+    display: inline-block;
+    height: 3px;
+    position: absolute;
+    width: 100%;
+}
+
+.burger_box .menu-icon_line--1 {
+    top: 2px;
+}
+
+.burger_box .menu-icon_line--2 {
+    top: 10px;
+}
+
+.burger_box .menu-icon_line--3 {
+    top: 18px;
+}
+
+.burger_box .menu-icon_line--1 {
+    transition: top 200ms 250ms, transform 200ms;
+    -webkit-transition: top 200ms 250ms, -webkit-transform 200ms;
+}
+
+.burger_box .menu-icon_line--2 {
+    transition: opacity 0ms 300ms;
+    -webkit-transition: opacity 0ms 300ms;
+}
+
+.burger_box .menu-icon_line--3 {
+    transition: top 100ms 300ms, transform 200ms;
+    -webkit-transition: top 100ms 300ms, -webkit-transform 200ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_box {
+    transform: scale3d(0.9, 0.9, 0.9);
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+}
+
+.burger_box .menu-icon.opened .menu-icon_line {
+    top: 10px;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--1 {
+    transform: rotate3d(0, 0, 1, 45deg);
+    -webkit-transform: rotate3d(0, 0, 1, 45deg);
+    transition: top 100ms, transform 200ms 250ms;
+    -webkit-transition: top 100ms, -webkit-transform 200ms 250ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--2 {
+    opacity: 0;
+    transition: opacity 200ms;
+    -webkit-transition: opacity 200ms;
+}
+
+.burger_box .menu-icon.opened .menu-icon_line--3 {
+    transform: rotate3d(0, 0, 1, -45deg);
+    -webkit-transform: rotate3d(0, 0, 1, -45deg);
+    transition: top 200ms, transform 200ms 250ms;
+    -webkit-transition: top 200ms, -webkit-transform 200ms 250ms;
+}
+
+.menu_title{
+    margin: 15% 0;
+}
+
+.menu_line {
+    width: 100%;
+    height: 2px;
+    background: white;
+}
+
+.menu_list_item a,
+.menu_list_item a:visited,
+.menu_list_item a:active {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.top_login a,
+.top_login a:visited,
+.top_login a:active {
+    text-decoration: none;
+    color: coral;
+}
+
+.menu_list {
+    padding-inline-start: 0px;
+}
+
+.menu_list_item {
+    list-style: none;
+    margin: 10%;
+    line-height: 3;
+}
+
+/* ------------------------로그인 css ------------------------ */
+.top_login {
+    float:right;
+    font-weight: bold;
+    color: coral;
+    font-size: 1.2em;
+}
+.before_login{
+    display: block;
+    padding: 0.5em;
+    border-radius: 5px;
+}
+.before_login:hover{
+    background: rgb(224, 224, 224);
+    transition: .5s all;
+}
+.success_login{
+    display: none;
+    clear: both;
+}
+.success_login img{
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    margin-bottom: 5%;
+    border-radius: 5px;
+    margin-top: 2%;
+}
+
+#user_info{
+    cursor: pointer;
+    font-weight: bold;
+    padding: 6px;
+    border-radius: 5px;
+    margin: 5px;
+}
+#user_info:hover{
+    background: rgb(224, 224, 224);
+}
+.user_div{
+    display: none;
+    transition: .5s all;
+}
+.user_div_btn{
+    width: 80%;
+    height: 30px;
+    margin-top: 4px;
+    background: beige;
+    border: solid 2px coral;
+    color: coral;
+    font-weight: bold;
+    z-index: 997;
+    cursor: pointer;
+    border-radius: 3px;
+    float: right;
+}
+.user_div_btn:hover{
+    background: rgb(224, 224, 224);
+}

@@ -14,7 +14,7 @@ from db_func import *
 BP = Blueprint('event', __name__)
 
 # 일정 달력 반환
-@BP.route('/event/main', methods = ['POST'])
+@BP.route('/event/main')
 @jwt_required
 def event__main():
     user = user_select(g.db, get_jwt_identity())
@@ -46,11 +46,6 @@ def event__upload():
     if TITLE == "":
         return jsonify(
             STATUS = "EMPTY TITLE"
-        )
-    # 날짜를 입력 안했을 때
-    if DATE == "":
-        return jsonify(
-            STATUS = "EMPTY DATE"
         )
     # 장소 입력 안했을 경우 NULL 값 입력
     if PLACE == "":
@@ -93,11 +88,6 @@ def event__modify():
     if TITLE == "":
         return jsonify(
             STATUS = "EMPTY TITLE"
-        )
-    # 날짜를 입력 안했을 때
-    if DATE == "":
-        return jsonify(
-            STATUS = "EMPTY DATE"
         )
     # 장소 입력 안했을 경우 NULL 값 입력
     if PLACE == "":

@@ -21,8 +21,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'bmp'}
 
 
-#ok# 본인의 데일리 달력 반환
-@BP.route('/look/main', methods = ['POST'])
+#ok# 본인의 룩 일정 달력 반환
+@BP.route('/look/main')
 @jwt_required
 def look__look():
     user = user_select(g.db, get_jwt_identity())
@@ -32,16 +32,12 @@ def look__look():
         )
     result = look_select(g.db, user['user_id'])
     
-    #pprint(result)
-    #result['event_date'] = result['event_date'].strftime("%m/%d/%Y")
-    #pprint(result)
-
     ## 결과 전송
     return jsonify(
         RESULT = result
     )
 
-#ok# 본인의 데일리 달력에 저장 
+#ok# 본인의 룩 일정 달력에 저장 
 @BP.route('/look/upload', methods = ['POST'])
 @jwt_required
 def look__upload():
@@ -72,7 +68,14 @@ def look__upload():
         return jsonify(
             STATUS = "EMPTY TOP"
         )
-        #look_default.png
+    if BOT == "":
+        return jsonify(
+            STATUS = "EMPTY BOT"
+        )
+    if SHOES == "":
+        return jsonify(
+            STATUS = "EMPTY SHOES"
+        )
     # 사진을 등록했다면
     if files:
         file_check = file_name_encode(files.filename)
@@ -112,6 +115,7 @@ def look__upload():
         return jsonify(
             STATUS = "SUCCESS"
         )
+    # 사진 등록 하지 않았다면
     else:
         PHOTO = "look_default.png"
         sPHOTO = "S-look_default.png"
@@ -139,7 +143,7 @@ def look__upload():
         STATUS = result
     )
 
-#ok# 데일리 달력 수정
+#ok# 룩 일정 달력 수정
 @BP.route('/look/modify', methods = ['POST'])
 @jwt_required
 def look__modify():
@@ -171,6 +175,14 @@ def look__modify():
     if TOP == "":
         return jsonify(
             STATUS = "EMPTY TOP"
+        )
+    if BOT == "":
+        return jsonify(
+            STATUS = "EMPTY BOT"
+        )
+    if SHOES == "":
+        return jsonify(
+            STATUS = "EMPTY SHOES"
         )
     # 사진을 등록했다면
     if files:
@@ -207,6 +219,7 @@ def look__modify():
         return jsonify(
             STATUS = "SUCCESS"
         )
+    # 사진을 등록하지 않았다면(기존 사진 그대로 유지)
     else:
         look_new_data = (
             TITLE, COLOR, DATE, PLACE, NUM
@@ -228,7 +241,7 @@ def look__modify():
                 STATUS = "Can't Insert DB"
             )
 
-#ok# 데일리 달력 삭제
+#ok# 룩 일정 달력 삭제
 @BP.route('/look/delete', methods = ['POST'])
 @jwt_required
 def look__delete():

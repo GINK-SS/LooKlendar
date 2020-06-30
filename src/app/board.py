@@ -9,7 +9,6 @@ from werkzeug.security import *
 from flask_jwt_extended import *
 from flask_cors import CORS
 from PIL import Image
-from pprint import pprint
 from werkzeug.utils import secure_filename
 import datetime
 ###########################################
@@ -21,7 +20,6 @@ UPLOAD_PATH = "/static/files/"
 
 # 커뮤니티 전체글 반환
 @BP.route('/board/main', methods=['POST'])
-#@jwt_optional
 def board__look():
     PAGE = request.get_json()['page']
     result = {}
@@ -41,12 +39,13 @@ def board__look():
 
 # 커뮤니티 검색 글 반환
 @BP.route('/board/search', methods=['POST'])
-#@jwt_optional
 def board__look_search():
     PAGE = request.get_json()['page']
     TEXT = request.get_json()['text']
+    OPTION = request.get_json()['option']
     result = {}
-    boards = boards_select_search(g.db, text, int(PAGE))
+    boards = boards_select_search(g.db, TEXT, (int(PAGE)*12-12), OPTION)
+
     if get_jwt_identity():
         user = user_select(g.db, get_jwt_identity())
         if user is None:
@@ -60,7 +59,28 @@ def board__look_search():
     )
     return jsonify(result)
 
-# 커뮤니티 단일 글 반환
+# 커뮤니티 정렬 글 반환
+@BP.route('/board/array', methods=['POST'])
+def board__look_array():
+    PAGE = request.get_json()['page']
+    OPTION = request.get_json()['option']
+    result = {}
+    boards = boards_select_array(g.db, int(PAGE), OPTION)
+
+    if get_jwt_identity():
+        user = user_select(g.db, get_jwt_identity())
+        if user is None:
+            return jsonify(
+                "FucKlendar"
+            )
+    
+    result.update(
+        STATUS = "SUCCESS",
+        BOARD = boards
+    )
+    return jsonify(result)
+    
+# 커뮤니티 단일 글 + 글의 댓글 반환
 @BP.route('/board/<int:dailylook_num>')
 def board__look_one(dailylook_num):
     result = {}
@@ -116,6 +136,7 @@ def board__upload():
             return jsonify(
                 STATUS = "Can't Insert PHOTO DB"
             )
+    # 사진 등록 안 했다면
     else:
         PHOTO = "look_default.png"
         board_data = (
@@ -192,6 +213,7 @@ def board__modify():
             )
             func_result = board_modify(g.db, board_new_data)
         else:
+            # 사진 그대로 유지
             board_new_data = (
                 TITLE, TEXT, OUTER, TOP, BOT, SHOES, ACC, NUM
             )
@@ -218,8 +240,11 @@ def board__delete():
             "FucKlendar"
         )
     NUM = request.get_json()['num']
-    #글의 주인인지 확인
-    APPLY = board_apply(g.db, NUM, user['user_id'])
+    #글의 주인인지 확인 (관리자면 OK)
+    if user['user_id'] == "admin":
+        APPLY = "OK"
+    else:
+        APPLY = board_apply(g.db, NUM, user['user_id'])
     # 아니면 권한없음
     if APPLY == "FUCK":
         return jsonify(
@@ -291,6 +316,7 @@ def comment__modify():
         return jsonify(
             STATUS = "Not allowed"
         )
+    # 작성자 본인이라면
     else:
         TEXT = request.get_json()['text']
         result = comment_modify(g.db, NUM, TEXT)
@@ -308,7 +334,13 @@ def comment__delete(comment_num):
         return jsonify(
             "FucKlendar"
         )
-    access = comment_apply(g.db, comment_num, user['user_id'])
+    # 관리자라면 엑세스 통과
+    if user['user_id'] == 'admin':
+        access = "OK"
+    # 관리자가 아닐 경우 댓글의 작성자인지 확인
+    else:
+        access = comment_apply(g.db, comment_num, user['user_id'])
+    # 작성자가 아니라면 삭제 불가
     if access != "OK":
         return jsonify(
             STATUS = "Not allowed"

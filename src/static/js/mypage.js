@@ -73,7 +73,6 @@ function userinfo_modify_FetchAPI() {
     var file;
     if(document.querySelector("#modify_photo").files.length == 0) file = '';
     else file = document.querySelector("#modify_photo").files[0];
-    console.log(file);
     var remove;
     if(document.querySelector("#checkbox").checked) remove = '1';
     else remove = '0';
@@ -96,8 +95,7 @@ function userinfo_modify_FetchAPI() {
         })
         .then(res => res.json())
         .then((res) => {
-            console.log(res);
-            if(res['STA)TUS'] == "SUCCESS"){
+            if(res['STATUS'] == "SUCCESS"){
                 alert("회원정보 수정 완료");
             }
             else if(res['STATUS'] == "NICK EXIST"){
@@ -141,7 +139,7 @@ function userinfo_pw_modify_FetchAPI() {
         .then(res => res.json())
         .then((res) => {
             if(res['STATUS'] == "SUCCESS"){
-                alert("회원정보 수정 완료");
+                alert("비밀번호 수정 완료");
             }
             else if(res['STATUS'] == "fail"){
                 alert("알 수 없는 오류가 발생하였습니다. 다시 시도 해주세요.");
@@ -149,6 +147,40 @@ function userinfo_pw_modify_FetchAPI() {
         })
 }
 
+// ----------------- 회원 탈퇴 API ---------------
+function authout_FetchAPI() {
+    if (sessionStorage.length == 0) return;
+    else if (sessionStorage.length == 1)
+        if (sessionStorage.getItem("access_token") == 0) return;
+
+    const token = sessionStorage.getItem('access_token');
+
+    var pw = document.querySelector("#authout_pw").value;
+    
+    let send_data ={
+        'pw' : pw
+    };
+
+    fetch('/auth/authout', {
+            method: "POST",
+            headers: {
+                'Content-Type' : "application/json",
+                'Authorization': token
+            },
+            body : JSON.stringify(send_data)
+        })
+        .then(res => res.json())
+        .then((res) => {
+            if(res['STATUS'] == "SUCCESS"){
+                alert("회원 탈퇴 완료");
+                sessionStorage.setItem("access_token", "0");
+                window.location.href ="/";
+            }
+            else if(res['STATUS'] == "fail"){
+                alert("다시 시도 해주세요.");
+            }
+        })
+}
 
 // --------------------- 회원정보 변경 모달 -------------------- //
 document.querySelector("#userinfo_modify").addEventListener("click",function(){
@@ -218,6 +250,29 @@ document.querySelector("#pw_modify_button").addEventListener("click",function(){
     document.querySelector("#pw_modify_modal_background").style.display = "none";
     get_userinfo_FetchAPI();
 })
+
+
+// ------------------ 회원 탈퇴 모달 -----------------------
+document.querySelector("#authout").addEventListener("click",function(){
+    document.querySelector("#authout_modal_background").style.display="block";
+})
+document.querySelector("#authout_modal_exit").addEventListener('click', function () {
+    document.querySelector("#authout_modal_background").style.display = "none";
+})
+document.querySelector("#authout_button").addEventListener("click",function(){
+    var pw = document.querySelector("#authout_pw").value;
+    if(pw.length == 0){
+        alert("비밀번호를 확인해주세요!");
+        return;
+    }
+    if (confirm("정말로 탈퇴하시겠습니까?")) {
+        authout_FetchAPI();
+    } else {
+        return;
+    }
+})
+
+
 
 function image_load(event) {
     for (var image of event.target.files) {

@@ -10,27 +10,27 @@
             <div class="signup_box">
                 <div>
                     * ID : 6~20자 영어/숫자 혼합
-                    <input type="text" placeholder="아이디 입력" id="signup_id" class="text" autocomplete="off">
+                    <input type="text" placeholder="아이디 입력" id="signup_id" class="text" autocomplete="off" maxlength="20">
                 </div>
                 <div>
-                    * PW : 100자 미만
-                    <input type="password" placeholder="비밀번호 입력" id="signup_pw" class="text" autocomplete="off">
+                    * PW : 30자 미만
+                    <input type="password" placeholder="비밀번호 입력" id="signup_pw" class="text" autocomplete="off" maxlength="30">
                 </div>
                 <div>
                     * PW check :
-                    <input type="password" placeholder="비밀번호 확인" id="signup_pw2" class="text" autocomplete="off">
+                    <input type="password" placeholder="비밀번호 확인" id="signup_pw2" class="text" autocomplete="off" maxlength="30">
                 </div>
                 <div>
                     * E-mail : 특수문자 X / ex) look@sejong.com
-                    <input type="text" placeholder="이메일 입력" id="signup_email" class="text" autocomplete="off">
+                    <input type="text" placeholder="이메일 입력" id="signup_email" class="text" autocomplete="off" maxlength="30">
                 </div>
                 <div>
-                    * Name : 특수문자 X / ex) 임세종
-                    <input type="text" placeholder="이름 입력" id="signup_name" class="text" autocomplete="off">
+                    * Name : 특수문자 X / 20자 미만 / ex) 임세종
+                    <input type="text" placeholder="이름 입력" id="signup_name" class="text" autocomplete="off" maxlength="20">
                 </div>
                 <div>
-                    * Nickname :
-                    <input type="text" placeholder="닉네임 입력" id="signup_nickname" class="text" autocomplete="off">
+                    * Nickname : 20자 미만
+                    <input type="text" placeholder="닉네임 입력" id="signup_nickname" class="text" autocomplete="off" maxlength="20">
                 </div>
                 <div>
                     Gender :
@@ -42,7 +42,7 @@
                     <input type="text" placeholder="생년월일 입력" id="signup_birth" maxlength="8" class="text" autocomplete="off"> 
                 </div>
                 <div>
-                    * 프로필 사진 :
+                    프로필 사진 :
                     <input type="file" class="modal_image" id="signup_photo" accept="image/*"
                         onchange="image_load(event);" value="../files/user_image1.jpg"/>          
                     <div id="modal_image_container"></div>

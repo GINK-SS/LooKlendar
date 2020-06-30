@@ -45,6 +45,7 @@ body {
 .top_login {
     flex: 1;
     color: #74b9ff;
+    font-weight: bold;
 }
 .before_login{
     display: block;
@@ -59,6 +60,7 @@ body {
     vertical-align: middle;
     margin-bottom: 5%;
     border-radius: 5px;
+    margin-top: 2%;
 }
 
 /* 토글 버튼 CSS */
@@ -95,7 +97,7 @@ body {
 
 #top_toggle_button .checkbox:checked+.circle:before {
     content: 'LOOK';
-    background-color: #f44336;
+    background-color: mediumpurple;
 }
 
 #top_toggle_button .checkbox:checked~.layer {
@@ -110,7 +112,7 @@ body {
 
 /* 사이드 메뉴 css */
 .side_menu {
-    background: rgba(0, 20, 60, .9);
+    background: darkslateblue;
     height: 100vh;
     left: -250px;
     position: fixed;
@@ -118,6 +120,7 @@ body {
     width: 250px;
     transition: all 0.3s ease-in-out;
     color: white;
+    opacity: 0.9;
 }
 
 .side_menu .container {
@@ -157,7 +160,7 @@ body {
 
 .burger_box a.menu-icon.opened,
 a.menu-icon.closed {
-    background: rgba(0, 20, 60, .9);
+    background: darkslateblue;
 }
 
 .burger_box .menu-icon_box {
@@ -244,6 +247,7 @@ a.menu-icon.closed {
 .menu_list_item a:active {
     text-decoration: none;
     color: white;
+    cursor: pointer;
 }
 
 .top_login a,
@@ -263,6 +267,7 @@ a.menu-icon.closed {
 }
 
 /* 캘린더 부분 그리드 */
+
 .day-of-week,
 .date-grid {
     display: grid;
@@ -464,7 +469,6 @@ a.menu-icon.closed {
     background: whitesmoke;
 }
 .user_div{
-    background: whitesmoke;
     display: none;
     height: 100px;
     transition: .5s all;

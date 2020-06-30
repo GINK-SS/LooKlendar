@@ -115,7 +115,10 @@ function loadYYMM(fullDate) {
             item.childNodes[item.childNodes.length - 1].style.display = "none";
         })
         if(document.querySelector(".checkbox").checked){
-            item.style.background = "rgba(0, 0, 0, 0.1)"
+            item.classList.add("day_look");
+            item.style.background= "rgba(230, 230, 250, 0.1)";
+            item.style.border = "solid 2px rgb(147,112,216)";
+            item.style.color = "rgb(147,112,216)";
         }
     }
     
@@ -346,7 +349,7 @@ function get_calendar_FetchAPI() {
 
     const token = sessionStorage.getItem('access_token');
     fetch('/event/main', {
-            method: "POST",
+            method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -380,7 +383,7 @@ function get_look_FetchAPI() {
 
     const token = sessionStorage.getItem('access_token');
     fetch('/look/main', {
-            method: "POST",
+            method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -420,7 +423,7 @@ function get_calendar_modal_FetchAPI(e) {
 
     const token = sessionStorage.getItem('access_token');
     fetch('/event/main', {
-            method: "POST",
+            method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -485,7 +488,7 @@ function get_look_modal_FetchAPI(e) {
 
     const token = sessionStorage.getItem('access_token');
     fetch('/look/main', {
-            method: "POST",
+            method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -654,6 +657,19 @@ function calendar_FetchAPI_v1() {
         // ------- 캘린더 데일리룩 ------- //
     } else if (modal_select == "modal_select_look") {
 
+        if(top == ''){
+            alert("상의를 입력해주세요.");
+            return;
+        }
+        else if(bot == ''){
+            alert("하의를 입력해주세요.");
+            return;
+        }
+        else if(shoes == ''){
+            alert("신발을 입력해주세요.");
+            return;
+        }
+
         var send_data = new FormData();
 
         send_data.append('color', mcolor);
@@ -733,6 +749,16 @@ function modal_plus_calendar() {
     })
     for (let plus of plus_button) {
         plus.addEventListener('click', function () {
+            if (sessionStorage.length == 0){
+                alert("로그인이 필요합니다.");
+                return;
+              } 
+              else if (sessionStorage.length == 1){
+                if (sessionStorage.getItem("access_token") == 0){
+                  alert("로그인이 필요합니다.");
+                  return;
+                }
+              }
             modal.style.display = "block";
             // plus 버튼 누를때 마다 모든 input의 value 초기화 시키기
             var form = document.querySelector(".modal_form");

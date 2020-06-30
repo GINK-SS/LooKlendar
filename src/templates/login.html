@@ -15,7 +15,26 @@
             <div class="atag">
                 <span>No id ? </span>
                 <a href="/signup" class="signup_btn">회원가입</a>
+                <span>forgot id ? </span>
+                <a id="find_id_btn" class="signup_btn">아이디 찾기</a>
             </div>
+            </div>
+        </div>
+        <!------------------------ 비밀번호 변경 모달 -------------------------->
+        <div id="find_modal_background" class="modal_background">
+            <div class="find_modal_box modal_box">
+                <span id="find_modal_exit" class="modal_exit">X</span>
+                <div class="modal_form">
+                    <div>
+                        * 이름 :
+                        <input type="text" placeholder="이름 입력" id="find_name" class="text" autocomplete="off" maxlength="30">
+                    </div>
+                    <div>
+                        * E-MAIL : 
+                        <input type="text" placeholder="이메일 입력" id="find_email" class="text" autocomplete="off" maxlength="30">
+                    </div>
+                    <button id="find_button" class="modify_btn">아이디 찾기</button>
+                </div>
             </div>
         </div>
     </div>
